@@ -1,0 +1,15 @@
+tmp/*
+root/media/*
+sql/current.sql
+index/*
+logs/*
+extern/stunnel/stunnel.log
+extern/APE_server/bin/ape.log
+extern/elasticsearch/logs/*
+extern/elasticsearch/data/*
+*.un~
+*.swp
+messagequeue/mq.db
+root/static/video/*
+main/
+supervise/
