@@ -1,0 +1,32 @@
+[Fri Jan 13 22:23:27 2012] [info] Server listening (http://*:3000)
+[Fri Jan 13 22:23:35 2012] [debug] Your secret passphrase needs to be changed!!!
+[Fri Jan 13 22:23:35 2012] [debug] GET / (Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.26 Safari/535.11).
+[Fri Jan 13 22:23:35 2012] [debug] Template "not_found.development.html.ep" not found.
+[Fri Jan 13 22:23:35 2012] [debug] Template "not_found.html.ep" not found.
+[Fri Jan 13 22:23:35 2012] [debug] Rendering inline template.
+[Fri Jan 13 22:23:35 2012] [debug] 404 Not Found (0.008176s, 122.309/s).
+[Fri Jan 13 22:37:47 2012] [info] Server listening (http://*:3000)
+[Fri Jan 13 22:37:52 2012] [debug] Your secret passphrase needs to be changed!!!
+[Fri Jan 13 22:37:52 2012] [debug] GET /welcome (Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.26 Safari/535.11).
+[Fri Jan 13 22:37:52 2012] [debug] Dispatching "C5::Example->welcome".
+[Fri Jan 13 22:37:52 2012] [debug] Rendering template "example/welcome.html.ep".
+[Fri Jan 13 22:37:52 2012] [debug] Rendering template "layouts/default.html.ep".
+[Fri Jan 13 22:37:52 2012] [debug] 200 OK (0.005624s, 177.809/s).
+[Fri Jan 13 22:38:24 2012] [debug] GET /welcome (Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.26 Safari/535.11).
+[Fri Jan 13 22:38:24 2012] [debug] Dispatching "C5::Example->welcome".
+[Fri Jan 13 22:38:24 2012] [debug] 200 OK (0.001118s, 894.454/s).
+[Fri Jan 13 22:38:26 2012] [debug] GET /welcome (Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.26 Safari/535.11).
+[Fri Jan 13 22:38:26 2012] [debug] Dispatching "C5::Example->welcome".
+[Fri Jan 13 22:38:26 2012] [debug] 200 OK (0.001173s, 852.515/s).
+[Fri Jan 13 22:38:27 2012] [debug] GET /welcome (Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.26 Safari/535.11).
+[Fri Jan 13 22:38:27 2012] [debug] Dispatching "C5::Example->welcome".
+[Fri Jan 13 22:38:27 2012] [debug] 200 OK (0.001160s, 862.069/s).
+[Fri Jan 13 22:38:27 2012] [debug] GET /welcome (Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.26 Safari/535.11).
+[Fri Jan 13 22:38:27 2012] [debug] Dispatching "C5::Example->welcome".
+[Fri Jan 13 22:38:27 2012] [debug] 200 OK (0.001142s, 875.657/s).
+[Fri Jan 13 22:38:27 2012] [debug] GET /welcome (Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.26 Safari/535.11).
+[Fri Jan 13 22:38:27 2012] [debug] Dispatching "C5::Example->welcome".
+[Fri Jan 13 22:38:27 2012] [debug] 200 OK (0.001145s, 873.362/s).
+[Fri Jan 13 22:38:27 2012] [debug] GET /welcome (Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.26 Safari/535.11).
+[Fri Jan 13 22:38:27 2012] [debug] Dispatching "C5::Example->welcome".
+[Fri Jan 13 22:38:27 2012] [debug] 200 OK (0.001135s, 881.057/s).
