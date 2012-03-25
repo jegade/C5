@@ -17,10 +17,10 @@ sub startup {
     # Secret passphrase
     $self->secret('e469204d87f8b2a74190e42ddd821059039d40ef');
 
-    $self->attr( repo => sub { C5::Repository->new( $self->defaults->{config}{repository} ) } );
+    #$self->attr( repo => sub { C5::Repository->new( $self->defaults->{config}{repository} ) } );
 
-# Database connection $self->storage->db->name
-    $self->helper( repository => sub { shift->app->repo } );
+    # Database connection $self->storage->db->name
+    #$self->helper( repository => sub { shift->app->repo } );
 
 
    use MojoX::Renderer::TT;

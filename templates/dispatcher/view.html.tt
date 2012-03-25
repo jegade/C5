@@ -1,4 +1,4 @@
 [% theme.code | eval %]
 
 
-<pre>[% instance.title %] for [% authority %]</pre>
+<pre>[% instance.title %] for [% authority %] with [% node.path %]</pre>

@@ -3,6 +3,7 @@ root/media/*
 sql/current.sql
 index/*
 logs/*
+log/*
 extern/stunnel/stunnel.log
 extern/APE_server/bin/ape.log
 extern/elasticsearch/logs/*

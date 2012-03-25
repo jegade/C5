@@ -10,6 +10,7 @@ has description => ( is => 'rw' );
 has authority   => ( is => 'rw' );
 has trees       => ( is => 'rw' );
 has paths       => ( is => 'rw' );
+has elements    => ( is => 'rw' );
 
 =head2 get_instance_by_authority
 
@@ -34,8 +35,6 @@ sub get_node_by_path {
 
     my ( $self, $path ) = @_;
 
-    warn "Search for  path";
-
     if ( exists $self->paths->{$path}  ) {
 
         return $self->paths->{$path} ;
@@ -46,6 +45,7 @@ sub get_node_by_path {
     }
 
 }
+
 
 sub get_content_by_path {
 
@@ -76,6 +76,13 @@ sub init {
     }
 
     $self->paths( $set ) ;
+
+    my $elements = {};
+    my $element= C5::Storage::Element->make_dummy_element('element-01');
+    $elements->{$element->uuid } = $element;
+
+    $self->elements( $elements ) ;
+
 }
 
 
