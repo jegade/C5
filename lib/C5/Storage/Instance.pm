@@ -1,41 +1,82 @@
 package C5::Storage::Instance;
- 
+
 use Moo;
 
-has title => (
+extends 'C5::Storage';
 
-    is => 'rw'
+has uuid        => ( is => 'rw' );
+has title       => ( is => 'rw' );
+has description => ( is => 'rw' );
+has authority   => ( is => 'rw' );
+has trees       => ( is => 'rw' );
+has paths       => ( is => 'rw' );
 
-);
+=head2 get_instance_by_authority
 
-has description => ( 
-
-    is => 'rw'
-
-);
-
-has domain => (
-    
-    is => 'rw'
-
-);
-
-
-=head2 get_instance_by_domain
-
-    Get the related instance for the given domain
+    Get the related instance for the given authority
 
 =cut
 
-sub get_instance_by_domain {
+sub get_instance_by_authority {
 
-    my ( $self, $domain ) = @_;
+    my ( $self, $authority ) = @_;
 
     # TODO, Dummy so far
 
-    return $self->_dummy_instance;
+    return $self->_dummy_instance("default");
 }
 
+=head2 get_node_by_path 
+
+=cut
+
+sub get_node_by_path {
+
+    my ( $self, $path ) = @_;
+
+    warn "Search for  path";
+
+    if ( exists $self->paths->{$path}  ) {
+
+        return $self->paths->{$path} ;
+        
+    } else {
+
+        return;
+    }
+
+}
+
+sub get_content_by_path {
+
+    my ( $self, $path ) = @_;
+    return C5::Storage::Content->get_by_path( $self->uuid, $path);
+}
+
+
+sub init {
+
+    my ( $self ) = @_;
+
+    # Load every path
+    
+    my $trees = C5::Storage::Tree->get_trees_by_instance( $self->uuid ); 
+
+    my $set = {};
+
+    foreach my $tree ( @$trees ) {
+
+        my $nodes = $tree->nodes;
+
+        foreach my $node ( @$nodes ) {
+
+            $set->{$node->path} = $node;
+        }
+
+    }
+
+    $self->paths( $set ) ;
+}
 
 
 =head2 _dummy_instance
@@ -45,11 +86,10 @@ sub get_instance_by_domain {
 =cut
 
 sub _dummy_instance {
-    my ( $self, $domain ) = @_;
-    return $self->new( domain => $domain, title => "Beispiel Instanz" , description => "Das ist nur eine Beispiel Instanz des neuen CMS5");
+    my ( $self, $authority ) = @_;
+    return $self->new( uuid => 'instance-01', authority => $authority, title => "Beispiel Instanz", description => "Das ist nur eine Beispiel Instanz des neuen CMS5" );
 
 }
 
 1;
-
 

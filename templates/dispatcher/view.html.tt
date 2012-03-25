@@ -1,0 +1,4 @@
+[% theme.code | eval %]
+
+
+<pre>[% instance.title %] for [% authority %]</pre>

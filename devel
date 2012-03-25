@@ -1,11 +1,8 @@
-#!/usr/bin/env perl
+#!/bin/bash
 
-use Mojo::Server::Morbo;
+export MOJO_RELOAD=1
+export MOJO_LOG_LEVEL=debug
 
-use Data::Printer;
+morbo script/c5 --listen="http://*:8010" --listen="https://*:8011" & 
+tail -f log/development.log
 
-my $morbo = Mojo::Server::Morbo->new;
-
-$morbo->watch;
-
-$morbo->run('./script/c5');

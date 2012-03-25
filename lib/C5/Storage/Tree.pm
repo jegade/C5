@@ -6,11 +6,11 @@ has name        => ( is => 'rw' );
 has uuid        => ( is => 'rw' );
 has type        => ( is => 'rw' );
 has description => ( is => 'rw' );
-has domain      => ( is => 'rw' );
+has authority   => ( is => 'rw' );
 has paths       => ( is => 'rw' );
 has instance    => ( is => 'rw' );
 has root        => ( is => 'rw' );
-has version     => ( is => 'rw' ); 
+has version     => ( is => 'rw' );
 has state       => ( is => 'rw' );
 
 =head2 get_tree_by_instance
@@ -37,6 +37,19 @@ sub get_node_by_path {
 
     my ( $self, $path ) = @_;
 
+    my $paths = $self->paths;
+
+
+}
+
+=head2 nodes
+
+=cut
+
+sub nodes {
+    
+    my ( $self ) = @_;
+    return [ map { C5::Storage::Tree::Node->new( %$_, path => $self->root. $_->{path} ) } @{$self->paths} ];
 }
 
 =head2 _dummy_trees
@@ -49,7 +62,7 @@ sub _dummy_trees {
 
     my ($self) = @_;
 
-    my $trees = {};
+    my $trees = [];
 
     my $menu_tree = [
 
@@ -58,7 +71,6 @@ sub _dummy_trees {
             path        => "/startseite",
             description => "Die Startseite",
         },
-
 
         {
             name        => "Aktuelles",
@@ -78,36 +90,42 @@ sub _dummy_trees {
 
         {
             name        => "Medien",
-            path        => "/media",
+            path        => "/",
             description => "Alle",
         },
 
-
         {
             name        => "Fotos",
-            path        => "/media/photo",
+            path        => "/photo",
             description => "Die Fotos",
         },
 
         {
             name        => "Vidos",
-            path        => "/media/video",
+            path        => "video",
             description => "Die Videos",
         },
     ];
 
-    my $menu  = $self->new( uuid => 'menu-01', name => "Menü",     root => "/", paths => $menu_tree );
+    my $menu  = $self->new( uuid => 'menu-01',   name => "Menü",   root => "/site",  paths => $menu_tree );
     my $media = $self->new( uuid => 'mendia-01', name => 'Medien', root => '/media', paths => $media_tree );
 
-    $trees->{by_root}{ $menu->root }  = $menu;
-    $trees->{by_root}{ $media->root } = $media;
-
-    $trees->{by_uuid}{ $menu->uuid }  = $menu;
-    $trees->{by_uuid}{ $media->uuid } = $media;
+    
+    push $trees, $menu;
+    push $trees, $media;
 
     return $trees;
 
 }
 
 
-1;
+package  C5::Storage::Tree::Node;
+
+use Moo;
+
+has name          => ( is => 'rw' );
+has path         => ( is => 'rw' );
+has descrioption => ( is => 'rw' );
+has theme        =>  ( is => 'rw' );
+1
+;

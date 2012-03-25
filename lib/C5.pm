@@ -22,14 +22,29 @@ sub startup {
 # Database connection $self->storage->db->name
     $self->helper( repository => sub { shift->app->repo } );
 
+
+   use MojoX::Renderer::TT;
+ 
+    my $tt = MojoX::Renderer::TT->build(
+        mojo => $self,
+        template_options => {
+            UNICODE  => 1,
+            ENCODING => 'UTF-8',
+        }
+    );
+ 
+    $self->renderer->add_handler( tt => $tt ); 
+    $self->renderer->default_handler('tt');
+
+    
     # Routes
     my $r = $self->routes;
 
     my $root = $r->bridge('/')->to('root#auth');
 
-    $root->route('/')->to('root#index');
+    $root->route('/')->to('dispatcher#view');
 
-    $root->route('/(*path)')->to('frontend#view');
+    $root->route('/(*path)')->to('dispatcher#view');
 
 }
 
