@@ -1,0 +1,11 @@
+#!/usr/bin/env perl
+
+use Mojo::Server::Morbo;
+
+use Data::Printer;
+
+my $morbo = Mojo::Server::Morbo->new;
+
+$morbo->watch;
+
+$morbo->run('./script/c5');
