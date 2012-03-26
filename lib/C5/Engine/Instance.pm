@@ -1,4 +1,4 @@
-package C5::Storage::Instance;
+package C5::Engine::Instance;
 
 use Moo;
 
@@ -66,7 +66,7 @@ sub get_node_by_path {
 sub get_content_by_path {
 
     my ( $self, $path ) = @_;
-    return C5::Storage::Content->get_by_path( $self->uuid, $path );
+    return C5::Engine::Content->get_by_path( $self->uuid, $path );
 }
 
 =head2 init
@@ -80,7 +80,7 @@ sub init {
     my ($self) = @_;
 
     # Load every path from the given trees
-    my $trees = C5::Storage::Tree->get_trees_by_instance( $self->uuid );
+    my $trees = C5::Engine::Tree->get_trees_by_instance( $self->uuid );
 
     my $set = {};
     my $trees_set = {} ;
@@ -106,7 +106,7 @@ sub init {
     my $elements_by_uuid = {};
 
     foreach my $uuid ( ('element-h1', 'element-p','element-01' )) {
-        my $element  = C5::Storage::Element->make_dummy_element( $uuid);
+        my $element  = C5::Engine::Element->make_dummy_element( $uuid);
         $elements_by_uuid->{ $element->uuid } = $element;
     }
 
@@ -114,7 +114,7 @@ sub init {
 
 
     # Preload themes
-    my $themes = C5::Storage::Theme->get_themes_by_instance( $self->uuid );
+    my $themes = C5::Engine::Theme->get_themes_by_instance( $self->uuid );
 
     my $themes_by_uuid = {};
 

@@ -1,4 +1,4 @@
-package C5::Storage::Tree;
+package C5::Engine::Tree;
 
 use Moo;
 use utf8;
@@ -88,7 +88,7 @@ sub items {
 sub nodes {
 
     my ($self) = @_;
-    return [ map { C5::Storage::Node->new( %$_, path => $self->root . $_->{path}, theme => 'theme-01', type => 'html', content => 'plain' ) } @{ $self->paths } ];
+    return [ map { C5::Engine::Node->new( %$_, path => $self->root . $_->{path}, theme => 'theme-01', type => 'html', content => 'plain' ) } @{ $self->paths } ];
 }
 
 =head2 _dummy_trees

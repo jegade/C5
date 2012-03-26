@@ -1,9 +1,9 @@
-package C5::Storage::Content;
+package C5::Engine::Content;
 
 use Moo;
 use utf8;
 
-extends 'C5::Storage';
+extends 'C5::Engine';
 
 has title       => ( is => 'rw' );
 has description => ( is => 'rw' );

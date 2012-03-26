@@ -3,7 +3,7 @@ use Mojo::Base 'Mojolicious';
 
 use DateTime;
 use C5::Repository;
-use C5::Storage;
+use C5::Engine;
 
 # This method will run once at server start
 sub startup {
@@ -18,7 +18,7 @@ sub startup {
     # Secret passphrase
     $self->secret('e469204d87f8b2a74190e42ddd821059039d40ef');
 
-    $self->attr( storage => sub { my $c5s = C5::Storage->new; $c5s->init; return $c5s;  } );
+    $self->attr( storage => sub { my $c5s = C5::Engine->new; $c5s->init; return $c5s;  } );
 
     # Database connection $self->storage->db->name
     $self->helper( storage => sub { shift->app->storage } );

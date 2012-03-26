@@ -1,9 +1,9 @@
-package C5::Storage::Theme;
+package C5::Engine::Theme;
 
 use Moo;
 use utf8;
 
-extends 'C5::Storage';
+extends 'C5::Engine';
 
 has uuid        => ( is => 'rw' );
 has title       => ( is => 'rw' );

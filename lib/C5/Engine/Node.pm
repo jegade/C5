@@ -1,4 +1,4 @@
-package C5::Storage::Node;
+package C5::Engine::Node;
 
 use Moo;
 use utf8;

@@ -1,4 +1,4 @@
-package C5::Storage::Response;
+package C5::Engine::Response;
 
 use Moo;
 

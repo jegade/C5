@@ -1,14 +1,14 @@
 #!perl
 
-package C5::Storage;
+package C5::Engine;
 
-use C5::Storage::Instance;
-use C5::Storage::Theme;
-use C5::Storage::Content;
-use C5::Storage::Tree;
-use C5::Storage::Element;
-use C5::Storage::Node;
-use C5::Storage::Response;
+use C5::Engine::Instance;
+use C5::Engine::Theme;
+use C5::Engine::Content;
+use C5::Engine::Tree;
+use C5::Engine::Element;
+use C5::Engine::Node;
+use C5::Engine::Response;
 use Encode;
 
 use Moo;
@@ -40,7 +40,7 @@ sub init {
     my ( $self ) = @_;
 
     # Get instances
-    my $instances = C5::Storage::Instance->get_instances;
+    my $instances = C5::Engine::Instance->get_instances;
 
     my $set = {};
 
@@ -89,30 +89,30 @@ sub get_response_for {
                 if ( $node->type eq 'code'  ) {
 
                     # Code verarbeiten und Rückgabe
-                    $response = C5::Storage::Response->new( $node->run ) ;
+                    $response = C5::Engine::Response->new( $node->run ) ;
 
                 } elsif ( $node->type eq 'redirect' ) {
     
-                    $response = C5::Storage::Response->new( status => 'redirect', data => $node->url ) ;
+                    $response = C5::Engine::Response->new( status => 'redirect', data => $node->url ) ;
                 
 
                 } elsif ( $node->type eq 'html' ) {
                                    
-                    $response = C5::Storage::Response->new( status => 'bytes', data => $self->wrap_with_theme($instance, $node)   );
+                    $response = C5::Engine::Response->new( status => 'bytes', data => $self->wrap_with_theme($instance, $node)   );
 
                 } elsif ( $node->type eq 'file' ) {
 
-                    $response = C5::Storage::Response->new( status => 'serve', data => $node->fs );
+                    $response = C5::Engine::Response->new( status => 'serve', data => $node->fs );
 
                 } else {
 
-                    $response = C5::Storage::Response->new( status => 'notfound', data => 'Unkown Response type' );
+                    $response = C5::Engine::Response->new( status => 'notfound', data => 'Unkown Response type' );
 
                 }
 
             } else {
 
-                $response = C5::Storage::Response->new( status => 'notfound', data => "No node found" );
+                $response = C5::Engine::Response->new( status => 'notfound', data => "No node found" );
             }
 
             # Caching for code and html
@@ -130,7 +130,7 @@ sub get_response_for {
     
     } else {
 
-        return C5::Storage::Response->new( status => 'notfound', data => 'Could not found instance for authority' );
+        return C5::Engine::Response->new( status => 'notfound', data => 'Could not found instance for authority' );
 
     }
 

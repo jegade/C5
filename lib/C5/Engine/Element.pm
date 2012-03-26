@@ -1,4 +1,4 @@
-package C5::Storage::Element;
+package C5::Engine::Element;
 
 use Moo;
 
