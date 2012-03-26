@@ -83,10 +83,13 @@ sub init {
     my $trees = C5::Storage::Tree->get_trees_by_instance( $self->uuid );
 
     my $set = {};
+    my $trees_set = {} ;
 
     foreach my $tree (@$trees) {
 
         my $nodes = $tree->nodes;
+
+        $trees_set->{$tree->uuid} = $tree;
 
         foreach my $node (@$nodes) {
 
@@ -95,6 +98,7 @@ sub init {
 
     }
 
+    $self->trees( $trees_set );
     $self->paths($set);
 
     # Load every element

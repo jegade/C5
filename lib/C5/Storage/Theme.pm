@@ -22,13 +22,13 @@ has code        => (
         
         #main {
 
-            margin-right: 30%;
+            margin-left: 30%;
         }
 
         #sidebar {
 
             width: 25%;
-            float: right;  
+            float: left;  
         }
     </style>
 
@@ -37,11 +37,38 @@ has code        => (
 <body>
     <div id="sidebar">
 
+            <ul>
+                
+                [% FOREACH item IN trees.menu.items %]
+
+                    <li><a href="[% item.path %]">[% item.name | html %]</a>
+                    
+                    [% IF item.children.size > 0 %]
+                    <ul>
+                        [% FOREACH child IN item.children %]
+                        
+                            <li><a href="[% child.path %]">[% child.name | html %]</a></li>
+                     
+                        [% END %]
+                    </ul>
+                    [% END %]
+
+                    </li>
+
+
+                    
+
+                [% END %]
+
+            </ul>
+
+
+
             [% FOREACH element IN content.sidebar %]
 
-            [% element.process | eval  %]
+                [% element.process | eval  %]
 
-        [% END %]
+            [% END %]
 
     </div>
 

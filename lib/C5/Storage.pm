@@ -14,6 +14,8 @@ use Encode;
 use Moo;
 
 has instances => ( is => 'rw' );
+has cache     => ( is => 'rw' ) ;
+
 
 =head2 store_to_repository
 
@@ -67,43 +69,64 @@ sub get_response_for {
     my ( $self, $authority, $path ) = @_;
 
     if ( exists $self->instances->{$authority} )  {
+        
+        # TODO Upgrade Cache to something better
+        if ( $self->cache && exists $self->cache->{ $authority }{ $path } ) {
 
-        my $instance = $self->instances->{$authority} ;
-
-        my $node = $instance->get_node_by_path( $path ) ;
-
-        if ( defined $node ) {
-
-            if ( $node->type eq 'code'  ) {
-
-                # Code verarbeiten und Rückgabe
-                return C5::Storage::Response->new( $node->run ) ;
-
-            } elsif ( $node->type eq 'redirect' ) {
-
-                return C5::Storage::Response->new( status => 'redirect', data => $node->url ) ;
-                
-
-            } elsif ( $node->type eq 'html' ) {
-                               
-                return C5::Storage::Response->new( status => 'bytes', data => $self->wrap_with_theme($instance, $node)   );
-    
-            } elsif ( $node->type eq 'file' ) {
-
-                return C5::Storage::Response->new( status => 'serve', data => $node->fs );
-
-            } else {
-
-                return C5::Storage::Response->new( status => 'notfound', data => 'Unkown Response type' );
-
-            }
+            
+            return $self->cache->{ $authority }{ $path } ;
 
         } else {
 
-            return C5::Storage::Response->new( status => 'notfound', data => "No node found" );
+            my $instance = $self->instances->{$authority} ;
+
+            my $node = $instance->get_node_by_path( $path ) ;
+
+            my $response = undef;
+                
+            if ( defined $node ) {
+
+                if ( $node->type eq 'code'  ) {
+
+                    # Code verarbeiten und Rückgabe
+                    $response = C5::Storage::Response->new( $node->run ) ;
+
+                } elsif ( $node->type eq 'redirect' ) {
+    
+                    $response = C5::Storage::Response->new( status => 'redirect', data => $node->url ) ;
+                
+
+                } elsif ( $node->type eq 'html' ) {
+                                   
+                    $response = C5::Storage::Response->new( status => 'bytes', data => $self->wrap_with_theme($instance, $node)   );
+
+                } elsif ( $node->type eq 'file' ) {
+
+                    $response = C5::Storage::Response->new( status => 'serve', data => $node->fs );
+
+                } else {
+
+                    $response = C5::Storage::Response->new( status => 'notfound', data => 'Unkown Response type' );
+
+                }
+
+            } else {
+
+                $response = C5::Storage::Response->new( status => 'notfound', data => "No node found" );
+            }
+
+            # Caching for code and html
+            if ( $node->type eq 'html' || $node->type eq 'code' ) {
+
+                # TODO build storage api
+                if ( !$self->cache) {  $self->cache({} ); }
+                $self->cache->{$authority}{$path} = $response;
+            }
+        
+            return $response;
+
 
         }
-
     
     } else {
 
@@ -140,6 +163,7 @@ sub wrap_with_theme {
     my $stash = {
         node     => $node,
         elements => $instance->elements,
+        trees    => $instance->trees,
         instance => $instance, 
         theme    => $theme,
         content  => $content

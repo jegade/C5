@@ -3,8 +3,9 @@ package C5::Storage::Tree;
 use Moo;
 use utf8;
 
+has uuid        => ( is => 'rw' );
 has name        => ( is => 'rw' );
-has type        => ( is => 'rw' );  # content, media, assets
+has type        => ( is => 'rw' );    # content, media, assets
 has description => ( is => 'rw' );
 has authority   => ( is => 'rw' );
 has paths       => ( is => 'rw' );
@@ -39,6 +40,44 @@ sub get_node_by_path {
 
     my $paths = $self->paths;
 
+}
+
+=head2 items 
+
+    Build recursive structur
+
+=cut
+
+sub items {
+
+    my ($self) = @_;
+
+    my $root = [];
+
+    my $by_path = {};
+
+    foreach my $path ( @{ $self->paths } ) {
+
+        $path->{children} = [];
+        $by_path->{ $path->{sort} } = $path;
+    }
+
+    foreach my $item ( @{ $self->paths } ) {
+
+        if ( defined $item->{parent} ) {
+        
+            if ( defined $by_path->{ $item->{parent} } ) { 
+                push @{ $by_path->{ $item->{parent} }{children} }, $item;
+            }
+
+        } else {
+
+            push @$root, $item;
+
+        }
+    }
+
+    return $root;
 
 }
 
@@ -47,9 +86,9 @@ sub get_node_by_path {
 =cut
 
 sub nodes {
-    
-    my ( $self ) = @_;
-    return [ map { C5::Storage::Node->new( %$_, path => $self->root. $_->{path}, theme =>  'theme-01', type => 'html', content => 'plain') } @{$self->paths} ];
+
+    my ($self) = @_;
+    return [ map { C5::Storage::Node->new( %$_, path => $self->root . $_->{path}, theme => 'theme-01', type => 'html', content => 'plain' ) } @{ $self->paths } ];
 }
 
 =head2 _dummy_trees
@@ -68,20 +107,26 @@ sub _dummy_trees {
 
         {
             name        => "Startseite",
-            path        => "/startseite",
+            path        => "/site/startseite",
             description => "Die Startseite",
+            parent      => undef,
+            sort        => 1,
         },
 
         {
             name        => "Aktuelles",
-            path        => "/startseite/aktuelles",
+            parent      => 1,
+            path        => "/site/startseite/aktuelles",
             description => "Die News",
+            sort        => 2,
         },
 
         {
             name        => "Impressum",
-            path        => "/startseite/impressum",
+            path        => "/site/startseite/impressum",
             description => "Das Impressum",
+            sort        => 3,
+            parent      => 1,
         },
 
     ];
@@ -107,10 +152,9 @@ sub _dummy_trees {
         },
     ];
 
-    my $menu  = $self->new( uuid => 'menu-01',   name => "Menü",   root => "/site",  paths => $menu_tree );
-    my $media = $self->new( uuid => 'mendia-01', name => 'Medien', root => '/media', paths => $media_tree );
+    my $menu  = $self->new( uuid => 'menu',   name => "Menü",  root => "",      paths => $menu_tree );
+    my $media = $self->new( uuid => 'mendia', name => 'Medien', root => '/media', paths => $media_tree );
 
-    
     push $trees, $menu;
     push $trees, $media;
 
