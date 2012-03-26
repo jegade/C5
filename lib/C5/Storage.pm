@@ -9,6 +9,7 @@ use C5::Storage::Tree;
 use C5::Storage::Element;
 use C5::Storage::Node;
 use C5::Storage::Response;
+use Encode;
 
 use Moo;
 
@@ -84,8 +85,8 @@ sub get_response_for {
                 
 
             } elsif ( $node->type eq 'html' ) {
-                
-                return C5::Storage::Response->new( status => 'bytes', data => $node->content . " … "  );
+                               
+                return C5::Storage::Response->new( status => 'bytes', data => $self->wrap_with_theme($instance, $node)   );
     
             } elsif ( $node->type eq 'file' ) {
 
@@ -111,6 +112,44 @@ sub get_response_for {
     }
 
     
+}
+
+=head2 wrap_with_theme
+
+=cut
+
+sub wrap_with_theme {
+
+    my ( $self, $instance, $node ) = @_;
+
+    use Template;
+
+    my $tt = Template->new({ UNICODE => 1 }) || die "$Template::ERROR\n";
+    
+    # Suche Theme oder nehme Default
+    my $theme = $instance->themes->{$node->theme};
+    $theme = shift values  $instance->themes unless $theme;
+
+    # Get content
+    my $content = $instance->get_content_by_path( $node->path ) ; 
+
+    die "Missing theme" unless $theme;
+
+    my $code = $theme->code;
+
+    my $stash = {
+        node     => $node,
+        elements => $instance->elements,
+        instance => $instance, 
+        theme    => $theme,
+        content  => $content
+    };
+
+    # Process Theme
+    my $output = "";
+    $tt->process( \$code, $stash, \$output ) or die $tt->error;
+
+    return encode('utf-8', $output );
 }
 
 

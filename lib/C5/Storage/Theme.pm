@@ -14,55 +14,69 @@ has code        => (
     lazy    => 1,
     default => sub {
         return qq~<!DOCTYPE html>
-        <html>
-        <head>
-            <title>[% instance.title %] with some german umlaut äöü …</title>
+<html>
+<head>
+    <title>[% instance.title %] with some german umlaut äöü …</title>
 
-            <style>
-                
-                #main {
-
-                    margin-right: 30%;
-                }
-
-                #sidebar {
-    
-                    width: 25%;
-                    float: right;  
-                }
-            </style>
-
-        </head>
+    <style>
         
-        <body>
-           <div id="sidebar">
+        #main {
 
-                 [% FOREACH element IN content.sidebar %]
+            margin-right: 30%;
+        }
 
-                    [% element.process | eval  %]
+        #sidebar {
 
-                [% END %]
+            width: 25%;
+            float: right;  
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="sidebar">
+
+            [% FOREACH element IN content.sidebar %]
+
+            [% element.process | eval  %]
+
+        [% END %]
+
+    </div>
+
+    <div id="main">
+
+        [% FOREACH element IN content.main %]
+
+            [% element.process | eval  %]
+
+        [% END %]
+    </div>
+
     
-            </div>
-
-            <div id="main">
-
-                [% FOREACH element IN content.main %]
-
-                    [% element.process | eval  %]
-
-                [% END %]
-            </div>
-
-         
-            <p>Some extra chars ✈ ☢ </p>
+    <p>Some extra chars ✈ ☢ </p>
 
 
-        </body>
-        
-        </html>~;
+</body>
+
+</html>~;
     }
 );
+
+=head2 get_themes_by_instance 
+
+
+=cut
+
+sub get_themes_by_instance {
+
+    my ( $self ) = @_;
+
+    my $themes = [];
+    push @$themes, $self->_make_basis_theme;
+    return $themes;
+}
 
 
 =head2 _make_basis_theme 
