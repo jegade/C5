@@ -40,7 +40,7 @@ sub init {
     my ($self) = @_;
 
     # Get instances
-    my $instances = C5::Engine::Instance->get_instances;
+    my $instances = C5::Engine::Instance->get_instances( $self->repository );
 
     my $set = {};
 

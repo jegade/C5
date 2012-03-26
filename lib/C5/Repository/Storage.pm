@@ -20,6 +20,18 @@ sub db {
     return $self->{db} ||= MongoDB::Connection->new( %{ $self->connection } )->$collection->objects;
 }
 
+
+=head2 query
+
+=cut
+
+sub query {
+
+    my ( $self, @args ) = @_;
+    $self->db->query( @args ) ;
+}
+
+
 =head2 get
 
 =cut

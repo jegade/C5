@@ -2,11 +2,10 @@ package C5::Engine::Instance;
 
 use Moo;
 
-
 has uuid        => ( is => 'rw' );
 has title       => ( is => 'rw' );
 has description => ( is => 'rw' );
-has authority   => ( is => 'rw', lazy  => 1, default => sub { return [] } );
+has authority   => ( is => 'rw', lazy => 1, default => sub { return [] } );
 has trees       => ( is => 'rw' );
 has paths       => ( is => 'rw' );
 has elements    => ( is => 'rw' );
@@ -14,31 +13,25 @@ has themes      => ( is => 'rw' );
 has repository  => ( is => 'rw' );
 
 
-=head2 get_instance_by_authority
 
-    Get the related instance for the given authority
+=head2 get_instances
+
+    Query every instance 
 
 =cut
 
-sub get_instance_by_authority {
-
-    my ( $self, $authority ) = @_;
-
-    # TODO, Dummy so far
-
-    return $self->_dummy_instance("default");
-}
-
 sub get_instances {
 
-    my ($self) = @_;
+    my ($self, $repository) = @_;
 
     my $instances = [];
 
-    foreach ( 1..50 ) {
-        push @$instances,  $self->_dummy_instance("127.0.0.1:8011");
-        push @$instances,  $self->_dummy_instance("127.0.0.1:8010");
-     }
+    my @in = $repository->query( { 'meta.type' => 'instance' })->all;
+
+    foreach my $i ( @in) {
+        push @$instances,  C5::Engine::Instance->new( $i->{payload} ) ;
+    }
+
 
     return $instances;
 }
@@ -85,14 +78,14 @@ sub init {
     # Load every path from the given trees
     my $trees = C5::Engine::Tree->get_trees_by_instance( $self->uuid );
 
-    my $set = {};
-    my $trees_set = {} ;
+    my $set       = {};
+    my $trees_set = {};
 
     foreach my $tree (@$trees) {
 
         my $nodes = $tree->nodes;
 
-        $trees_set->{$tree->uuid} = $tree;
+        $trees_set->{ $tree->uuid } = $tree;
 
         foreach my $node (@$nodes) {
 
@@ -101,32 +94,31 @@ sub init {
 
     }
 
-    $self->trees( $trees_set );
+    $self->trees($trees_set);
     $self->paths($set);
 
     # Load every element
 
     my $elements_by_uuid = {};
 
-    foreach my $uuid ( ('element-h1', 'element-p','element-01' )) {
-        my $element  = C5::Engine::Element->make_dummy_element( $uuid);
+    foreach my $uuid ( ( 'element-h1', 'element-p', 'element-01' ) ) {
+        my $element = C5::Engine::Element->make_dummy_element($uuid);
         $elements_by_uuid->{ $element->uuid } = $element;
     }
 
     $self->elements($elements_by_uuid);
-
 
     # Preload themes
     my $themes = C5::Engine::Theme->get_themes_by_instance( $self->uuid );
 
     my $themes_by_uuid = {};
 
-    foreach my $theme ( @$themes ) {
-        $themes_by_uuid->{$theme->uuid} = $theme;    
+    foreach my $theme (@$themes) {
+        $themes_by_uuid->{ $theme->uuid } = $theme;
     }
 
-    $self->themes( $themes_by_uuid ) ;
-    
+    $self->themes($themes_by_uuid);
+
 }
 
 =head2 _dummy_instance
@@ -147,27 +139,27 @@ sub _dummy_instance {
 
 sub store_to_repository {
 
-    my ( $self ) = @_;
-    
+    my ($self) = @_;
+
     my $meta = {
 
         uuid => $self->uuid,
-        
+        type => 'instance',
     };
 
     my $payload = {
 
-        title => $self->title,
+        uuid        => $self->uuid,
+        title       => $self->title,
         description => $self->description,
-        authority => $self->authority
+        authority   => $self->authority
     };
 
-    my $obj = $self->repository->create( $meta, $payload) ;
+    my $obj = $self->repository->create( $meta, $payload );
 
     return $obj->save;
 
 }
-
 
 1;
 
