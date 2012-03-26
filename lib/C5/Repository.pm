@@ -4,6 +4,8 @@ package C5::Repository;
 use strict;
 use warnings;
 
+use Moo;
+
 use Data::UUID::MT;
 
 use MongoDB;
@@ -14,23 +16,24 @@ use C5::Repository::Storage;
 use C5::Repository::Manage;
 use C5::Repository::Object;
 
-sub new {
+has remote  => ( is => 'rw' );
+has storage => ( is => 'rw' );
+has manage  => ( is => 'rw' );
 
-    my ( $self, $options ) = @_;
+has ug => ( is => 'rw', lazy => 1, default => sub { return Data::UUID::MT->new } );
 
-    my $base = bless {}, $self;
 
-    $base->{remote} = C5::Repository::Remote->new( $base, $options );
-    $base->{storage} = C5::Repository::Storage->new( $base, $options );
-    $base->{manage} = C5::Repository::Manage->new( $base, $options );
+sub init { 
 
-    $base->{ug} = Data::UUID::MT->new;
+    my ( $self ) = @_;
 
-    return $base;
-}
+    $self->remote( C5::Repository::Remote->new( base => $self ) );
+    $self->storage( C5::Repository::Storage->new( base => $self ) );
+    $self->manage( C5::Repository::Manage->new( base => $self ) );
+
+};
 
 =head2 create
-
 
 =cut
 
@@ -38,14 +41,14 @@ sub create {
 
     my ( $self, $meta, $payload ) = @_;
 
-    $meta->{uuid}   ||= $self->{ug}->create_string;
+    $meta->{uuid}   ||= $self->ug->create_string;
     $meta->{type}   ||= "base";
     $meta->{create} ||= time();
 
-    my $obj = C5::Repository::Object->new( $self, $meta, $payload );
-
+    my $obj = C5::Repository::Object->new( base => $self, meta => $meta, payload => $payload );
     return $obj;
 }
+
 
 =head2 get
 
@@ -86,21 +89,6 @@ sub query_raw {
     my ( $self, $query ) = @_;
 
     return $self->storage->query($query);
-}
-
-sub storage {
-
-    shift->{storage};
-}
-
-sub remote {
-
-    shift->{remote};
-}
-
-sub manage {
-
-    shift->{manage};
 }
 
 1;

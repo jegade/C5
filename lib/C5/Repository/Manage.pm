@@ -1,36 +1,10 @@
 
-
-use strict;
-use warnings;
-
-=head1 C5::Repository::Manage
-
-=cut
-
 package C5::Repository::Manage;
 
-=head2 new 
+use Moo;
 
-=cut
+has base => ( is => 'rw' );
 
-sub new {
-
-    my ( $self, $base, $options ) = @_;
-
-    $options->{base} = $base;
-
-    return bless $options, $self;
-}
-
-=head2 base
-
-=cut
-
-sub base {
-
-    my ($self) = @_;
-    return $self->{base};
-}
 
 =head2 rsync
 
@@ -46,7 +20,7 @@ sub rsync {
     my $list = $self->base->storage->list_uuids;
 
     # Query remote for missing objects
-    my $missings = $self->remote->check_for_updates($list);
+    my $missings = $self->base->remote->check_for_updates($list);
 
     foreach my $uuid (@$missings) {
         my $obj = $self->base->get($uuid);

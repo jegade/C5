@@ -1,38 +1,17 @@
 
-
-use strict;
-use warnings;
-
 package C5::Repository::Object;
 
-=head2 new
+use Moo;
 
-    Create an new Object
-
-=cut
-
-sub new {
-
-    my ( $package, $base, $meta, $payload ) = @_;
-    return bless { base => $base, meta => $meta, payload => $payload }, $package;
-}
-
-sub base {
-
-    my ($self) = @_;
-    return $self->{base};
-
-}
-
-=head2 update
-
-=cut
+has base    => ( is => 'rw' );
+has meta    => ( is => 'rw' );
+has payload => ( is => 'rw' );
 
 sub update {
 
     my ( $self, $payload ) = @_;
 
-    $self->{payload} = $payload;
+    $self->payload($payload);
 
     return;
 }
@@ -63,9 +42,9 @@ sub save {
 
     my $raw = {
 
-        uuid    => $self->{meta}{uuid},
-        meta    => $self->{meta},
-        payload => $self->{payload},
+        uuid    => $self->meta->{uuid},
+        meta    => $self->meta,
+        payload => $self->payload,
     };
 
     $self->base->storage->update($raw);

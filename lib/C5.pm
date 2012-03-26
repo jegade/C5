@@ -18,11 +18,28 @@ sub startup {
     # Secret passphrase
     $self->secret('e469204d87f8b2a74190e42ddd821059039d40ef');
 
-    $self->attr( storage => sub { my $c5s = C5::Engine->new; $c5s->init; return $c5s;  } );
+    $self->attr(
+
+        storage => sub {
+
+            # Initialise Repository
+            my $c5r = C5::Repository->new( options => $self->defaults->{config}{repository} );
+            $c5r->init;        
+                
+            
+            # Initialise Engine
+            my $c5e = C5::Engine->new( repository => $c5r, options => $self->defaults->{config}{engine} );
+            $c5e->init;
+
+            return $c5e;
+
+          }
+
+    );
 
     # Database connection $self->storage->db->name
     $self->helper( storage => sub { shift->app->storage } );
-    
+
     # Routes
     my $r = $self->routes;
 

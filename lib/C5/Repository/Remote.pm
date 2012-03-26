@@ -1,8 +1,10 @@
 
 package C5::Repository::Remote;
 
-use strict;
-use warnings;
+use Moo;
+
+has base => ( is => 'rw' );
+has remotes => ( is => 'rw' );
 
 =head1 C5::Repository::Remote
 
@@ -10,19 +12,6 @@ use warnings;
 
 =cut
 
-
-=head2 new
-
-=cut
-
-sub new {
-
-    my ( $self, $base, $config ) = @_;
-
-    $config->{base} = $base;
-
-    return bless $config, $self;
-}
 
 =head2 check_for_updates
 
@@ -57,15 +46,6 @@ sub retrieve {
 
     my ( $self, $cmd, $string ) = @_;
 
-}
-
-=head2 remotes
-
-=cut
-
-sub remotes {
-
-    return { shift->{remotes} };
 }
 
 1;

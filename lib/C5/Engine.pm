@@ -13,9 +13,9 @@ use Encode;
 
 use Moo;
 
-has instances => ( is => 'rw' );
-has cache     => ( is => 'rw' ) ;
-
+has instances  => ( is => 'rw' );
+has cache      => ( is => 'rw' );
+has repository => ( is => 'rw' );
 
 =head2 store_to_repository
 
@@ -37,24 +37,24 @@ sub store_to_repository {
 
 sub init {
 
-    my ( $self ) = @_;
+    my ($self) = @_;
 
     # Get instances
     my $instances = C5::Engine::Instance->get_instances;
 
     my $set = {};
 
-    foreach my $instance ( @$instances) {
+    foreach my $instance (@$instances) {
 
         # Initialisiere Instance, preload, themes, paths and elements
         $instance->init;
 
-        foreach my $authority ( @{$instance->authority} ) {
+        foreach my $authority ( @{ $instance->authority } ) {
             $set->{$authority} = $instance;
         }
     }
 
-    $self->instances( $set ) ;
+    $self->instances($set);
 
 }
 
@@ -68,37 +68,35 @@ sub get_response_for {
 
     my ( $self, $authority, $path ) = @_;
 
-    if ( exists $self->instances->{$authority} )  {
-        
-        # TODO Upgrade Cache to something better
-        if ( $self->cache && exists $self->cache->{ $authority }{ $path } ) {
+    if ( exists $self->instances->{$authority} ) {
 
-            
-            return $self->cache->{ $authority }{ $path } ;
+        # TODO Upgrade Cache to something better
+        if ( $self->cache && exists $self->cache->{$authority}{$path} ) {
+
+            return $self->cache->{$authority}{$path};
 
         } else {
 
-            my $instance = $self->instances->{$authority} ;
+            my $instance = $self->instances->{$authority};
 
-            my $node = $instance->get_node_by_path( $path ) ;
+            my $node = $instance->get_node_by_path($path);
 
             my $response = undef;
-                
+
             if ( defined $node ) {
 
-                if ( $node->type eq 'code'  ) {
+                if ( $node->type eq 'code' ) {
 
                     # Code verarbeiten und Rückgabe
-                    $response = C5::Engine::Response->new( $node->run ) ;
+                    $response = C5::Engine::Response->new( $node->run );
 
                 } elsif ( $node->type eq 'redirect' ) {
-    
-                    $response = C5::Engine::Response->new( status => 'redirect', data => $node->url ) ;
-                
+
+                    $response = C5::Engine::Response->new( status => 'redirect', data => $node->url );
 
                 } elsif ( $node->type eq 'html' ) {
-                                   
-                    $response = C5::Engine::Response->new( status => 'bytes', data => $self->wrap_with_theme($instance, $node)   );
+
+                    $response = C5::Engine::Response->new( status => 'bytes', data => $self->wrap_with_theme( $instance, $node ) );
 
                 } elsif ( $node->type eq 'file' ) {
 
@@ -119,25 +117,25 @@ sub get_response_for {
             if ( $node->type eq 'html' || $node->type eq 'code' ) {
 
                 # TODO build storage api
-                if ( !$self->cache) {  $self->cache({} ); }
+                if ( !$self->cache ) { $self->cache( {} ); }
                 $self->cache->{$authority}{$path} = $response;
             }
-        
+
             return $response;
 
-
         }
-    
+
     } else {
 
         return C5::Engine::Response->new( status => 'notfound', data => 'Could not found instance for authority' );
 
     }
 
-    
 }
 
 =head2 wrap_with_theme
+
+    Use the TT based Theme an wrap the content 
 
 =cut
 
@@ -147,14 +145,14 @@ sub wrap_with_theme {
 
     use Template;
 
-    my $tt = Template->new({ UNICODE => 1 }) || die "$Template::ERROR\n";
-    
+    my $tt = Template->new( { UNICODE => 1 } ) || die "$Template::ERROR\n";
+
     # Suche Theme oder nehme Default
-    my $theme = $instance->themes->{$node->theme};
-    $theme = shift values  $instance->themes unless $theme;
+    my $theme = $instance->themes->{ $node->theme };
+    $theme = shift values $instance->themes unless $theme;
 
     # Get content
-    my $content = $instance->get_content_by_path( $node->path ) ; 
+    my $content = $instance->get_content_by_path( $node->path );
 
     die "Missing theme" unless $theme;
 
@@ -164,7 +162,7 @@ sub wrap_with_theme {
         node     => $node,
         elements => $instance->elements,
         trees    => $instance->trees,
-        instance => $instance, 
+        instance => $instance,
         theme    => $theme,
         content  => $content
     };
@@ -173,10 +171,7 @@ sub wrap_with_theme {
     my $output = "";
     $tt->process( \$code, $stash, \$output ) or die $tt->error;
 
-    return encode('utf-8', $output );
+    return encode( 'utf-8', $output );
 }
-
-
-
 
 1;

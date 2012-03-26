@@ -2,14 +2,17 @@ package C5::Engine::Instance;
 
 use Moo;
 
+
 has uuid        => ( is => 'rw' );
 has title       => ( is => 'rw' );
 has description => ( is => 'rw' );
-has authority   => ( is => 'rw' );
+has authority   => ( is => 'rw', lazy  => 1, default => sub { return [] } );
 has trees       => ( is => 'rw' );
 has paths       => ( is => 'rw' );
 has elements    => ( is => 'rw' );
 has themes      => ( is => 'rw' );
+has repository  => ( is => 'rw' );
+
 
 =head2 get_instance_by_authority
 
@@ -33,8 +36,8 @@ sub get_instances {
     my $instances = [];
 
     foreach ( 1..50 ) {
-        push @$instances,  $self->_dummy_instance("dev.nacworld.net:8011");
-        push @$instances,  $self->_dummy_instance("dev.nacworld.net:8010");
+        push @$instances,  $self->_dummy_instance("127.0.0.1:8011");
+        push @$instances,  $self->_dummy_instance("127.0.0.1:8010");
      }
 
     return $instances;
@@ -137,6 +140,34 @@ sub _dummy_instance {
     return $self->new( uuid => 'instance-01', authority => [$authority], title => "Beispiel Instanz", description => "Das ist nur eine Beispiel Instanz des neuen CMS5" );
 
 }
+
+=head2 store_to_repository
+
+=cut
+
+sub store_to_repository {
+
+    my ( $self ) = @_;
+    
+    my $meta = {
+
+        uuid => $self->uuid,
+        
+    };
+
+    my $payload = {
+
+        title => $self->title,
+        description => $self->description,
+        authority => $self->authority
+    };
+
+    my $obj = $self->repository->create( $meta, $payload) ;
+
+    return $obj->save;
+
+}
+
 
 1;
 

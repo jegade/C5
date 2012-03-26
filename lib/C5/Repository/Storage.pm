@@ -1,26 +1,13 @@
 
-use warnings;
-use strict;
-
-=head1 C5::Repository::Storage
-
-
-=cut
-
 package C5::Repository::Storage;
 
-=head2 new
+use Moo;
 
-    Create an new Object
+use Data::Printer;
 
-=cut
-
-sub new {
-
-    my ( $package, $base, $options ) = @_;
-    $options->{base} = $base;
-    return bless $options, $package;
-}
+has base => ( is => 'rw' );
+has collection => ( is => 'rw', lazy => 1, default => sub { return 'c5' }  );
+has connection => ( is => 'rw', lazy => 1, default => sub { return {} } ) ;
 
 =head2 db
 
@@ -29,18 +16,8 @@ sub new {
 sub db {
 
     my $self = shift;
-    my $collection = $self->{collection} || "c5";
-    return $self->{db} ||= MongoDB::Connection->new( %{ $self->{connection} } )->$collection->objects;
-}
-
-=head2 base
-
-=cut
-
-sub base {
-
-    my ($self) = @_;
-    return $self->{base};
+    my $collection = $self->collection;
+    return $self->{db} ||= MongoDB::Connection->new( %{ $self->connection } )->$collection->objects;
 }
 
 =head2 get
@@ -68,7 +45,9 @@ sub update {
 
     my ( $self, $raw ) = @_;
 
-    $self->db->insert( { uuid => $raw->{uuid} }, $raw, { upsert => 1, safe => 1 } );
+    p $raw;
+
+    $self->db->update( { uuid => $raw->{uuid} }, $raw, { upsert => 1, safe => 1 } );
     $self->journal( 'update',  $raw->{uuid} );    
 }
 
