@@ -3,6 +3,7 @@ package C5::Storage::Theme;
 use Moo;
 use utf8;
 
+extends 'C5::Storage';
 
 has uuid        => ( is => 'rw' );
 has title       => ( is => 'rw' );

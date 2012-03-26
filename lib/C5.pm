@@ -3,6 +3,7 @@ use Mojo::Base 'Mojolicious';
 
 use DateTime;
 use C5::Repository;
+use C5::Storage;
 
 # This method will run once at server start
 sub startup {
@@ -17,25 +18,10 @@ sub startup {
     # Secret passphrase
     $self->secret('e469204d87f8b2a74190e42ddd821059039d40ef');
 
-    #$self->attr( repo => sub { C5::Repository->new( $self->defaults->{config}{repository} ) } );
+    $self->attr( storage => sub { my $c5s = C5::Storage->new; $c5s->init; return $c5s;  } );
 
     # Database connection $self->storage->db->name
-    #$self->helper( repository => sub { shift->app->repo } );
-
-
-   use MojoX::Renderer::TT;
- 
-    my $tt = MojoX::Renderer::TT->build(
-        mojo => $self,
-        template_options => {
-            UNICODE  => 1,
-            ENCODING => 'UTF-8',
-        }
-    );
- 
-    $self->renderer->add_handler( tt => $tt ); 
-    $self->renderer->default_handler('tt');
-
+    $self->helper( storage => sub { shift->app->storage } );
     
     # Routes
     my $r = $self->routes;

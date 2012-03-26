@@ -2,8 +2,6 @@ package C5::Storage::Instance;
 
 use Moo;
 
-extends 'C5::Storage';
-
 has uuid        => ( is => 'rw' );
 has title       => ( is => 'rw' );
 has description => ( is => 'rw' );
@@ -27,6 +25,19 @@ sub get_instance_by_authority {
     return $self->_dummy_instance("default");
 }
 
+sub get_instances {
+
+    my ($self) = @_;
+
+    my $instances = [];
+
+    foreach ( 1..100 ) {
+        push @$instances,  $self->_dummy_instance("dev.nacworld.net:8011");
+    }
+
+    return $instances;
+}
+
 =head2 get_node_by_path 
 
 =cut
@@ -35,10 +46,10 @@ sub get_node_by_path {
 
     my ( $self, $path ) = @_;
 
-    if ( exists $self->paths->{$path}  ) {
+    if ( exists $self->paths->{$path} ) {
 
-        return $self->paths->{$path} ;
-        
+        return $self->paths->{$path};
+
     } else {
 
         return;
@@ -46,45 +57,54 @@ sub get_node_by_path {
 
 }
 
+=head2 get_content_by_path 
+
+=cut
 
 sub get_content_by_path {
 
     my ( $self, $path ) = @_;
-    return C5::Storage::Content->get_by_path( $self->uuid, $path);
+    return C5::Storage::Content->get_by_path( $self->uuid, $path );
 }
 
+=head2 init
+
+    Preload 
+
+=cut
 
 sub init {
 
-    my ( $self ) = @_;
+    my ($self) = @_;
 
     # Load every path
-    
-    my $trees = C5::Storage::Tree->get_trees_by_instance( $self->uuid ); 
+
+    my $trees = C5::Storage::Tree->get_trees_by_instance( $self->uuid );
 
     my $set = {};
 
-    foreach my $tree ( @$trees ) {
+    foreach my $tree (@$trees) {
 
         my $nodes = $tree->nodes;
 
-        foreach my $node ( @$nodes ) {
+        foreach my $node (@$nodes) {
 
-            $set->{$node->path} = $node;
+            $set->{ $node->path } = $node;
         }
 
     }
 
-    $self->paths( $set ) ;
+    $self->paths($set);
 
+    # Load elements
     my $elements = {};
-    my $element= C5::Storage::Element->make_dummy_element('element-01');
-    $elements->{$element->uuid } = $element;
+    my $element  = C5::Storage::Element->make_dummy_element('element-01');
 
-    $self->elements( $elements ) ;
+    $elements->{ $element->uuid } = $element;
+
+    $self->elements($elements);
 
 }
-
 
 =head2 _dummy_instance
 
@@ -94,7 +114,7 @@ sub init {
 
 sub _dummy_instance {
     my ( $self, $authority ) = @_;
-    return $self->new( uuid => 'instance-01', authority => $authority, title => "Beispiel Instanz", description => "Das ist nur eine Beispiel Instanz des neuen CMS5" );
+    return $self->new( uuid => 'instance-01', authority => [$authority], title => "Beispiel Instanz", description => "Das ist nur eine Beispiel Instanz des neuen CMS5" );
 
 }
 

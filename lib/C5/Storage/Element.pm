@@ -9,35 +9,29 @@ has instance    => ( is => 'rw' );
 has code        => ( is => 'rw' );
 has type        => ( is => 'rw' );
 
-
-
 sub get_element_by_uuid {
 
     my ( $self, $uuid ) = @_;
 
-        return $self->_make_dummy_element($uuid);
+    return $self->_make_dummy_element($uuid);
 
 }
-
 
 sub make_dummy_element {
 
     my ( $self, $uuid ) = @_;
 
+    return $self->new(
 
-    return $self->new( 
-        
-        uuid => $uuid,
-        title => "HTML",
+        uuid        => $uuid,
+        title       => "HTML",
         description => "Einfaches Dummy-Element",
-        code    => qq|   [% element.payload %]  <hr />     |,
-        type => 'html'
+        code        => qq|   [% element.payload %]  <hr />     |,
+        type        => 'html'
 
     );
 
 }
-
-
 
 1;
 

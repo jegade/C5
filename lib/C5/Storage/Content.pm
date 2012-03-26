@@ -3,8 +3,8 @@ package C5::Storage::Content;
 use Moo;
 use utf8;
 
+extends 'C5::Storage';
 
-has uuid        => ( is => 'rw' );
 has title       => ( is => 'rw' );
 has description => ( is => 'rw' );
 has instance    => ( is => 'rw' );

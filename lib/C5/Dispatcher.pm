@@ -6,14 +6,6 @@ use utf8;
 
 use base 'Mojolicious::Controller';
 
-use Data::Printer;
-
-use C5::Storage::Instance;
-use C5::Storage::Theme;
-use C5::Storage::Content;
-use C5::Storage::Tree;
-use C5::Storage::Element;
-
 
 sub view {
 
@@ -22,50 +14,47 @@ sub view {
     my $path = $self->stash('path');
     $path = "/".$path if index($path,"/") != 0;
 
+    # Authority for the request domain.tld:port
     my $authority = $self->req->url->to_abs->authority;
 
     # Search the related instance for the domain:port
-    my $instance = C5::Storage::Instance->get_instance_by_authority($authority);
+    my $response = $self->storage->get_response_for( $authority, $path ) ;
 
-    if ( defined $instance ) {
+    if ( defined $response ) {
 
-        # Initialise Instance
-        $instance->init;
+        if ( $response->status eq 'notfound' ) {
 
-        # Search the related node
-        my $node = $instance->get_node_by_path($path);
-        
+            $self->render( status => 404, text => $response->data);
 
+        } elsif ( $response->status eq 'serve' ) {
 
-        if ( defined $node ) {
+            # TODO
 
-            # Get the content for the path
-            my $content = $instance->get_content_by_path( $node->path );
+        } elsif ( $response->status eq 'redirect' ) {
 
-            # Get Element 
-            my $elements = $instance->elements;
+            $self->redirect_to( $response->data ) ;
 
-            my $theme = C5::Storage::Theme->_make_basis_theme;
+        } elsif ( $response->status eq 'bytes'  )  {
 
-            # Stashing something
-            $self->stash( 'instance'  => $instance );
-            $self->stash( 'theme'     => $theme );
-            $self->stash( 'authority' => $authority );
-            $self->stash( 'content'   => $content );
-            $self->stash( 'node'      => $node );
-            $self->stash( 'trees'     => $instance->trees );
-            $self->stash( 'elements'  => $elements );
+            $self->render_data( $response->data ) ;
+
+        } elsif ( $response->status  eq 'json') {
+
+            $self->render_json( $response->data ) ;
+
+        } elsif ( $response->status eq 'error' ) {
+
+            $self->render( status => 501, text => $response->data ) ;
 
         } else {
 
-            $self->render( status => 404, text => "Could not found node for $path" );
-
-
+            $self->render( status => 501, text => "Unknown error, no knowing state responded" );
         }
+
 
     } else {
 
-            $self->render( status => 404, text => "Could not find instance for $authority" );
+            $self->render( status => 404, text => "Could not find response" );
 
     }
 

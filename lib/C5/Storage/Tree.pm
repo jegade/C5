@@ -4,7 +4,6 @@ use Moo;
 use utf8;
 
 has name        => ( is => 'rw' );
-has uuid        => ( is => 'rw' );
 has type        => ( is => 'rw' );  # content, media, assets
 has description => ( is => 'rw' );
 has authority   => ( is => 'rw' );
@@ -50,7 +49,7 @@ sub get_node_by_path {
 sub nodes {
     
     my ( $self ) = @_;
-    return [ map { C5::Storage::Tree::Node->new( %$_, path => $self->root. $_->{path}, theme =>  'theme-01' ) } @{$self->paths} ];
+    return [ map { C5::Storage::Node->new( %$_, path => $self->root. $_->{path}, theme =>  'theme-01', type => 'html', content => 'plain') } @{$self->paths} ];
 }
 
 =head2 _dummy_trees
@@ -119,14 +118,4 @@ sub _dummy_trees {
 
 }
 
-
-package  C5::Storage::Tree::Node;
-
-use Moo;
-
-has name          => ( is => 'rw' );
-has path         => ( is => 'rw' );
-has descrioption => ( is => 'rw' );
-has theme        =>  ( is => 'rw' );
-1
-;
+1;
