@@ -1,8 +1,9 @@
 package C5::Engine::Instance;
 
 use Moo;
+use Data::UUID::MT;
 
-has uuid        => ( is => 'rw' );
+has uuid => ( is => 'rw', lazy => 1, default => sub { return Data::UUID::MT->new->create_string } );
 has title       => ( is => 'rw' );
 has description => ( is => 'rw' );
 has authority   => ( is => 'rw', lazy => 1, default => sub { return [] } );
@@ -12,8 +13,6 @@ has elements    => ( is => 'rw' );
 has themes      => ( is => 'rw' );
 has repository  => ( is => 'rw' );
 
-
-
 =head2 get_instances
 
     Query every instance 
@@ -22,16 +21,15 @@ has repository  => ( is => 'rw' );
 
 sub get_instances {
 
-    my ($self, $repository) = @_;
+    my ( $self, $repository ) = @_;
 
     my $instances = [];
 
-    my @in = $repository->query( { 'meta.type' => 'instance' })->all;
+    my @in = $repository->query( { 'meta.type' => 'instance' } )->all;
 
-    foreach my $i ( @in) {
-        push @$instances,  C5::Engine::Instance->new( $i->{payload} ) ;
+    foreach my $i (@in) {
+        push @$instances, C5::Engine::Instance->new( repository => $repository, %{ $i->{payload} } );
     }
-
 
     return $instances;
 }
@@ -76,7 +74,7 @@ sub init {
     my ($self) = @_;
 
     # Load every path from the given trees
-    my $trees = C5::Engine::Tree->get_trees_by_instance( $self->uuid );
+    my $trees = C5::Engine::Tree->get_trees_by_instance( $self->repository, $self->uuid );
 
     my $set       = {};
     my $trees_set = {};
@@ -85,7 +83,7 @@ sub init {
 
         my $nodes = $tree->nodes;
 
-        $trees_set->{ $tree->uuid } = $tree;
+        $trees_set->{ $tree->accessor } = $tree;
 
         foreach my $node (@$nodes) {
 
@@ -109,7 +107,7 @@ sub init {
     $self->elements($elements_by_uuid);
 
     # Preload themes
-    my $themes = C5::Engine::Theme->get_themes_by_instance( $self->uuid );
+    my $themes = C5::Engine::Theme->get_themes_by_instance( $self->repository,  $self->uuid );
 
     my $themes_by_uuid = {};
 
@@ -117,7 +115,9 @@ sub init {
         $themes_by_uuid->{ $theme->uuid } = $theme;
     }
 
+
     $self->themes($themes_by_uuid);
+    
 
 }
 

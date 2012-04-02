@@ -9,6 +9,7 @@ has uuid        => ( is => 'rw' );
 has title       => ( is => 'rw' );
 has description => ( is => 'rw' );
 has instance    => ( is => 'rw' );
+has repository  => ( is => 'rw' );
 has code        => (
     is      => 'rw',
     lazy    => 1,
@@ -98,13 +99,18 @@ has code        => (
 
 sub get_themes_by_instance {
 
-    my ( $self ) = @_;
+    my ($self, $repository, $instance) = @_;
 
-    my $themes = [];
-    push @$themes, $self->_make_basis_theme;
+    my @in = $repository->query( { 'meta.type' => 'theme', 'payload.instance' => $instance } )->all;
+
+    my $themes;
+
+    foreach my $i (@in) {
+        push @$themes, $self->new( repository => $repository, %{ $i->{payload} }, uuid => $i->{uuid} );
+    }
+
     return $themes;
 }
-
 
 =head2 _make_basis_theme 
 
@@ -113,8 +119,37 @@ sub get_themes_by_instance {
 
 sub _make_basis_theme {
 
-    my ( $self ) = @_;
-    return $self->new(  uuid =>  'theme-01', title =>  'Plain Theme', description => 'a very basis plain theme' );
+    my ($self) = @_;
+    return $self->new( uuid => 'theme-01', title => 'Plain Theme', description => 'a very basis plain theme' );
+}
+
+=head2 store_to_repository
+
+=cut
+
+sub store_to_repository {
+
+    my ($self) = @_;
+
+    my $meta = {
+
+        uuid => $self->uuid,
+        type => 'theme',
+    };
+
+    my $payload = {
+
+        uuid        => $self->uuid,
+        title       => $self->title,
+        description => $self->description,
+        instance    => $self->instance,
+        code        => $self->code,
+    };
+
+    my $obj = $self->repository->create( $meta, $payload );
+
+    return $obj->save;
+
 }
 
 1;

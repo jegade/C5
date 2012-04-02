@@ -110,11 +110,12 @@ sub get_response_for {
 
             } else {
 
-                $response = C5::Engine::Response->new( status => 'notfound', data => "No node found" );
+
+                $response = C5::Engine::Response->new( status => 'notfound', data => "No node for $path found in ". $instance->title );
             }
 
             # Caching for code and html
-            if ( $node->type eq 'html' || $node->type eq 'code' ) {
+            if ( defined $node && (  $node->type eq 'html' || $node->type eq 'code' ) ) {
 
                 # TODO build storage api
                 if ( !$self->cache ) { $self->cache( {} ); }
@@ -147,14 +148,24 @@ sub wrap_with_theme {
 
     my $tt = Template->new( { UNICODE => 1 } ) || die "$Template::ERROR\n";
 
+    my $theme = undef;
+
     # Suche Theme oder nehme Default
-    my $theme = $instance->themes->{ $node->theme };
-    $theme = shift values $instance->themes unless $theme;
+    if ( defined $node->theme ) {
+    
+        $theme = $instance->themes->{ $node->theme };
+
+    } else {
+
+        my $themes = $instance->themes;
+        my @set =  values %{ $themes } ;
+        $theme = $set[0];
+    }
 
     # Get content
     my $content = $instance->get_content_by_path( $node->path );
 
-    die "Missing theme" unless $theme;
+    die "Missing theme" unless defined $theme;
 
     my $code = $theme->code;
 

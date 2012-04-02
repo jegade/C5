@@ -1,10 +1,12 @@
 package C5::Engine::Tree;
 
 use Moo;
+
+use Data::UUID::MT;
 use utf8;
 
-has uuid        => ( is => 'rw' );
-has name        => ( is => 'rw' );
+has uuid => ( is => 'rw', lazy => 1, default => sub { return Data::UUID::MT->new->create_string } );
+has name => ( is => 'rw' );
 has type        => ( is => 'rw' );    # content, media, assets
 has description => ( is => 'rw' );
 has authority   => ( is => 'rw' );
@@ -13,6 +15,8 @@ has instance    => ( is => 'rw' );
 has root        => ( is => 'rw' );
 has version     => ( is => 'rw' );
 has state       => ( is => 'rw' );
+has repository  => ( is => 'rw' );
+has accessor    => ( is => 'rw' );
 
 =head2 get_tree_by_instance
 
@@ -22,11 +26,18 @@ has state       => ( is => 'rw' );
 
 sub get_trees_by_instance {
 
-    my ( $self, $instance ) = @_;
+    my ( $self, $repository, $instance ) = @_;
 
-    # TODO
-    my $trees = $self->_dummy_trees;
+    my @in = $repository->query( { 'meta.type' => 'tree', 'payload.instance' => $instance } )->all;
+
+    my $trees;
+
+    foreach my $i (@in) {
+        push @$trees, C5::Engine::Tree->new( repository => $repository, %{ $i->{payload} }, uuid => $i->{uuid} );
+    }
+
     return $trees;
+
 }
 
 =head2 get_node_by_path 
@@ -65,8 +76,8 @@ sub items {
     foreach my $item ( @{ $self->paths } ) {
 
         if ( defined $item->{parent} ) {
-        
-            if ( defined $by_path->{ $item->{parent} } ) { 
+
+            if ( defined $by_path->{ $item->{parent} } ) {
                 push @{ $by_path->{ $item->{parent} }{children} }, $item;
             }
 
@@ -88,77 +99,39 @@ sub items {
 sub nodes {
 
     my ($self) = @_;
-    return [ map { C5::Engine::Node->new( %$_, path => $self->root . $_->{path}, theme => 'theme-01', type => 'html', content => 'plain' ) } @{ $self->paths } ];
+    
+    return [ map { C5::Engine::Node->new( %$_, path => $self->root . $_->{path}, theme => undef, type => 'html', content => 'plain' ) } @{ $self->paths } ];
 }
 
-=head2 _dummy_trees
+=head2 store_to_repository
 
-    Build a bunch dummy trees
-    
 =cut
 
-sub _dummy_trees {
+sub store_to_repository {
 
     my ($self) = @_;
 
-    my $trees = [];
+    my $meta = {
 
-    my $menu_tree = [
+        uuid => $self->uuid,
+        type => 'tree',
+    };
 
-        {
-            name        => "Startseite",
-            path        => "/site/startseite",
-            description => "Die Startseite",
-            parent      => undef,
-            sort        => 1,
-        },
+    my $payload = {
 
-        {
-            name        => "Aktuelles",
-            parent      => 1,
-            path        => "/site/startseite/aktuelles",
-            description => "Die News",
-            sort        => 2,
-        },
+        uuid        => $self->uuid,
+        name        => $self->name,
+        root        => $self->root,
+        paths       => $self->paths,
+        description => $self->description,
+        authority   => $self->authority,
+        instance    => $self->instance,
+        accessor    => $self->accessor,
+    };
 
-        {
-            name        => "Impressum",
-            path        => "/site/startseite/impressum",
-            description => "Das Impressum",
-            sort        => 3,
-            parent      => 1,
-        },
+    my $obj = $self->repository->create( $meta, $payload );
 
-    ];
-
-    my $media_tree = [
-
-        {
-            name        => "Medien",
-            path        => "/",
-            description => "Alle",
-        },
-
-        {
-            name        => "Fotos",
-            path        => "/photo",
-            description => "Die Fotos",
-        },
-
-        {
-            name        => "Vidos",
-            path        => "video",
-            description => "Die Videos",
-        },
-    ];
-
-    my $menu  = $self->new( uuid => 'menu',   name => "Menü",  root => "",      paths => $menu_tree );
-    my $media = $self->new( uuid => 'mendia', name => 'Medien', root => '/media', paths => $media_tree );
-
-    push $trees, $menu;
-    push $trees, $media;
-
-    return $trees;
+    return $obj->save;
 
 }
 
