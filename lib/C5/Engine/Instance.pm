@@ -60,7 +60,7 @@ sub get_node_by_path {
 sub get_content_by_path {
 
     my ( $self, $path ) = @_;
-    return C5::Engine::Content->get_by_path( $self->uuid, $path );
+    return C5::Engine::Content->get_by_path($self->repository, $self->uuid, $path );
 }
 
 =head2 init

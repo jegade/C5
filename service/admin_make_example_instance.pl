@@ -7,7 +7,6 @@ use utf8;
 use FindBin qw($Bin);
 use lib "$Bin/../lib";
 
-
 use C5::Engine;
 use C5::Engine::Instance;
 use C5::Engine::Tree;
@@ -19,7 +18,7 @@ $repository->init;
 
 $repository->storage->db->drop;
 
-my $instance = C5::Engine::Instance->new( repository => $repository, title => "First instance", description => "Some example instance", authority => [ '127.0.0.1:8010', '127.0.0.1:8011' ] ) ;
+my $instance = C5::Engine::Instance->new( repository => $repository, title => "First instance", description => "Some example instance", authority => [ '127.0.0.1:8010', '127.0.0.1:8011' ] );
 
 $instance->store_to_repository();
 
@@ -78,6 +77,52 @@ $tree_main->store_to_repository();
 my $tree_media = C5::Engine::Tree->new( repository => $repository, instance => $instance->uuid, accessor => 'media', name => 'Medien', root => '/media', paths => $media_tree );
 $tree_media->store_to_repository();
 
-my $themes = C5::Engine::Theme->new( repository => $repository, instance => $instance->uuid, title => "Theme", description => "Example"  );
+my $themes = C5::Engine::Theme->new( repository => $repository, instance => $instance->uuid, title => "Theme", description => "Example" );
 $themes->store_to_repository();
 
+my $content = C5::Engine::Content->new(
+
+    repository => $repository,
+    title      => "Sample content Startseite",
+    payload    => "Sample Content in payload",
+    type       => 'content',
+    path       => "/site/startseite",
+    instance   => $instance->uuid,
+    element    => 'element-01',
+    area       => "main",
+
+);
+
+$content->store_to_repository();
+
+
+my $content = C5::Engine::Content->new(
+
+    repository => $repository,
+    title      => "Sample content Startseite",
+    payload    => "Sample Content in payload",
+    type       => 'content',
+    path       => "/site/startseite",
+    instance   => $instance->uuid,
+    element    => 'element-01',
+    area       => "main",
+
+);
+
+$content->store_to_repository();
+
+
+my $content = C5::Engine::Content->new(
+
+    repository => $repository,
+    title      => "Sample content Startseite",
+    payload    => "Sample Content in payload",
+    type       => 'content',
+    path       => "/site/startseite",
+    instance   => $instance->uuid,
+    element    => 'element-01',
+    area       => "main",
+
+);
+
+$content->store_to_repository();

@@ -26,7 +26,7 @@ sub make_dummy_element {
         uuid        => $uuid,
         title       => "HTML",
         description => "Einfaches Dummy-Element",
-        code        => qq|   [% element.payload %]  <hr />     |,
+        code        => qq~   [% element.payload %] [% element.title | html %]  <hr />     ~,
         type        => 'html'
 
     );

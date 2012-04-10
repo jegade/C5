@@ -71,7 +71,7 @@ sub get_response_for {
     if ( exists $self->instances->{$authority} ) {
 
         # TODO Upgrade Cache to something better
-        if ( $self->cache && exists $self->cache->{$authority}{$path} ) {
+        if ( 0 &&  $self->cache && exists $self->cache->{$authority}{$path} ) {
 
             return $self->cache->{$authority}{$path};
 
@@ -80,6 +80,9 @@ sub get_response_for {
             my $instance = $self->instances->{$authority};
 
             my $node = $instance->get_node_by_path($path);
+
+            # Get content
+            my $content = $instance->get_content_by_path( $node->path );
 
             my $response = undef;
 
@@ -96,7 +99,7 @@ sub get_response_for {
 
                 } elsif ( $node->type eq 'html' ) {
 
-                    $response = C5::Engine::Response->new( status => 'bytes', data => $self->wrap_with_theme( $instance, $node ) );
+                    $response = C5::Engine::Response->new( status => 'bytes', data => $self->wrap_with_theme( $instance, $node, $content ) );
 
                 } elsif ( $node->type eq 'file' ) {
 
@@ -142,7 +145,7 @@ sub get_response_for {
 
 sub wrap_with_theme {
 
-    my ( $self, $instance, $node ) = @_;
+    my ( $self, $instance, $node, $content ) = @_;
 
     use Template;
 
@@ -161,9 +164,6 @@ sub wrap_with_theme {
         my @set =  values %{ $themes } ;
         $theme = $set[0];
     }
-
-    # Get content
-    my $content = $instance->get_content_by_path( $node->path );
 
     die "Missing theme" unless defined $theme;
 
