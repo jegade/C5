@@ -72,22 +72,6 @@ sub get_by_path {
 
 }
 
-sub make_dummy_content {
-
-    my ( $self, $id, $instance, $path, $area ) = @_;
-
-    return $self->new(
-        uuid     => 'content-' . $id,
-        title    => "Sample content",
-        payload  => "Sample Content in payload $id",
-        type     => 'content',
-        path     => $path,
-        instance => $instance,
-        element  => 'element-01',
-        area     => $area,
-    );
-}
-
 =head2 process
     
     Process TT2 with eval

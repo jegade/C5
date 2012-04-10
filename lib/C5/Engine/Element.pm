@@ -1,36 +1,62 @@
 package C5::Engine::Element;
 
 use Moo;
+use Data::UUID::MT;
+use utf8;
 
-has uuid        => ( is => 'rw' );
+has uuid => ( is => 'rw', lazy => 1, default => sub { return Data::UUID::MT->new->create_string } );
+
 has title       => ( is => 'rw' );
 has description => ( is => 'rw' );
 has instance    => ( is => 'rw' );
 has code        => ( is => 'rw' );
 has type        => ( is => 'rw' );
+has repository  => ( is => 'rw' ) ;
 
-sub get_element_by_uuid {
+=head2 store_to_repository
 
-    my ( $self, $uuid ) = @_;
+=cut
 
-    return $self->_make_dummy_element($uuid);
+sub store_to_repository {
+
+    my ($self) = @_;
+
+    my $meta = {
+
+        uuid => $self->uuid,
+        type => 'element',
+    };
+
+    my $payload = {
+
+        uuid        => $self->uuid,
+        description => $self->description,
+        instance    => $self->instance,
+        code        => $self->code,
+        type        => $self->type,
+    };
+
+    my $obj = $self->repository->create( $meta, $payload );
+
+    return $obj->save;
 
 }
 
-sub make_dummy_element {
 
-    my ( $self, $uuid ) = @_;
+sub elements_by_uuid {
 
-    return $self->new(
+    my ( $self, $repository, $instance ) = @_;
+   
+    my @in = $repository->query( { 'meta.type' => 'element', 'payload.instance' => $instance } )->all;
 
-        uuid        => $uuid,
-        title       => "HTML",
-        description => "Einfaches Dummy-Element",
-        code        => qq~   [% element.payload %] [% element.title | html %]  <hr />     ~,
-        type        => 'html'
+    my $elements;
 
-    );
+    foreach my $i (@in) {
+        my $e = C5::Engine::Element->new( repository => $repository, %{ $i->{payload} }, uuid => $i->{uuid} );
+        $elements->{ $e->uuid } = $e;
+    }
 
+    return $elements;
 }
 
 1;

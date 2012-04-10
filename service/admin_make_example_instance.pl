@@ -80,6 +80,45 @@ $tree_media->store_to_repository();
 my $themes = C5::Engine::Theme->new( repository => $repository, instance => $instance->uuid, title => "Theme", description => "Example" );
 $themes->store_to_repository();
 
+my $element1 = C5::Engine::Element->new(
+
+    repository  => $repository,
+    instance    => $instance->uuid,
+    title       => "HTML",
+    description => "Einfaches Dummy-Element",
+    code        => qq~ <h1>  [% element.payload %] [% element.title | html %] </h1>     ~,
+    type        => 'html'
+
+);
+
+$element1->store_to_repository;
+
+my $element2 = C5::Engine::Element->new(
+
+    repository  => $repository,
+    instance    => $instance->uuid,
+    title       => "HTML",
+    description => "Einfaches Dummy-Element",
+    code        => qq~  <p> [% element.payload %] [% element.title | html %]</p>   ~,
+    type        => 'html'
+
+);
+
+$element2->store_to_repository;
+
+my $element3 = C5::Engine::Element->new(
+
+    repository  => $repository,
+    instance    => $instance->uuid,
+    title       => "HTML",
+    description => "Einfaches Dummy-Element",
+    code        => qq~ <pre>[% element.payload %] [% element.title | html %]  </pre>     ~,
+    type        => 'html'
+
+);
+
+$element3->store_to_repository;
+
 my $content = C5::Engine::Content->new(
 
     repository => $repository,
@@ -88,13 +127,12 @@ my $content = C5::Engine::Content->new(
     type       => 'content',
     path       => "/site/startseite",
     instance   => $instance->uuid,
-    element    => 'element-01',
+    element    => $element1->uuid,
     area       => "main",
 
 );
 
 $content->store_to_repository();
-
 
 my $content = C5::Engine::Content->new(
 
@@ -104,13 +142,12 @@ my $content = C5::Engine::Content->new(
     type       => 'content',
     path       => "/site/startseite",
     instance   => $instance->uuid,
-    element    => 'element-01',
+    element    => $element2->uuid,
     area       => "main",
 
 );
 
 $content->store_to_repository();
-
 
 my $content = C5::Engine::Content->new(
 
@@ -120,9 +157,10 @@ my $content = C5::Engine::Content->new(
     type       => 'content',
     path       => "/site/startseite",
     instance   => $instance->uuid,
-    element    => 'element-01',
+    element    => $element3->uuid,
     area       => "main",
 
 );
 
 $content->store_to_repository();
+
