@@ -1,0 +1,51 @@
+
+<h1><a href="/_manage/list">Übersicht</a> » [% uuid %]</h1>
+
+<form name="update" method="post" action="/_manage/update/[% uuid %]" />
+
+<table>
+    
+    [% SWITCH object.meta.type %]
+
+    [% CASE 'theme' %]
+
+    <tr>
+        <td width="150">Titel</td>
+        <td><input type="text" name="payload.code" value="[% object.payload.description | html %]" /></td>
+ 
+    </tr>
+
+    <tr>
+        <td>DESCRIPTION</td>
+        <td><textarea name="payload.code">[% object.payload.description | html %]</textarea> </td>
+    </tr>
+ 
+    <tr>
+        <td>CODE</td>
+        <td><textarea name="payload.code">[% object.payload.code | html %]</textarea> </td>
+    </tr>
+
+    
+    [% END %]
+
+    <tr>
+
+        <td></td>
+        <td> <button type="submit">Absenden</button> </td>
+    </tr>
+
+
+
+</table>
+
+</form>
+
+
+
+
+<pre>
+
+[% dumped | html %]
+
+</pre>
+

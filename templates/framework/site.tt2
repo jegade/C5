@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>iC5</title>
+<style>
+
+    body {
+
+        font-family: Arial;
+        padding: 0;
+        margin: 10px;
+    }
+
+    table {
+        width: 100%;
+    }
+
+    td {
+        vertical-align: top;
+    }
+
+    input {
+        width: 90%;
+        border: 1px solid #CCC;
+     }
+
+
+    textarea {
+        width: 90%;
+        min-height: 100px;
+        border: 1px solid #CCC;
+    }
+    
+</style>
+
+</head>
+
+<body>
+[% content %]
+</body>
+
+</html>

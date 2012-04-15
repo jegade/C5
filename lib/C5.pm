@@ -24,9 +24,8 @@ sub startup {
 
             # Initialise Repository
             my $c5r = C5::Repository->new( options => $self->defaults->{config}{repository} );
-            $c5r->init;        
-                
-            
+            $c5r->init;
+
             # Initialise Engine
             my $c5e = C5::Engine->new( repository => $c5r, options => $self->defaults->{config}{engine} );
             $c5e->init;
@@ -37,6 +36,19 @@ sub startup {
 
     );
 
+    $self->plugin(
+        tt_renderer => {
+            template_options => {
+
+                WRAPPER  => 'framework/wrapper',
+                UNICODE  => 1,
+                ENCODING => 'UTF-8',
+
+            }
+        }
+    );
+
+
     # Database connection $self->storage->db->name
     $self->helper( storage => sub { shift->app->storage } );
 
@@ -46,6 +58,11 @@ sub startup {
     my $root = $r->bridge('/')->to('root#auth');
 
     $root->route('/')->to('dispatcher#view');
+
+    $root->route('/_manage/list')->to('manage#list');
+    $root->route('/_manage/view/(*uuid)')->to('manage#view');
+    $root->route('/_manage/update/(*uuid)')->to('manage#update');
+
 
     $root->route('/(*path)')->to('dispatcher#view');
 

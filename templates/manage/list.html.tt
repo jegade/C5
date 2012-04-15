@@ -1,0 +1,28 @@
+
+<h1>Objekte in der Datenbank</h1>
+
+<table>
+
+    <thead>
+        <tr>
+            <th>Type</th>
+            <th>UUID</th>
+            <th></th>
+        </tr>
+
+    </thead>
+
+    <tbody>
+        [% FOREACH object IN objects %]
+
+            <tr>
+                <td>[% object.meta.type %]</td>
+                <td>[% object.uuid %]</td>
+                <td><a href="/_manage/view/[% object.uuid %]">Bearbeiten</a> |</td>
+                <td><a href="/_manage/drop/[% object.uuid %]">Löschen</a></td>
+            </tr>
+
+        [% END %]
+    </tbody>
+
+</table>

@@ -1,0 +1,1 @@
+[% content  WRAPPER 'framework/site.tt2' %]
