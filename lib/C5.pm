@@ -60,8 +60,10 @@ sub startup {
     $root->route('/')->to('dispatcher#view');
 
     $root->route('/_manage/list')->to('manage#list');
-    $root->route('/_manage/view/(*uuid)')->to('manage#view');
-    $root->route('/_manage/update/(*uuid)')->to('manage#update');
+    $root->route('/_manage/create/#type')->to('manage#create');
+    $root->route('/_manage/drop/#uuid')->to('manage#drop');
+    $root->route('/_manage/view/#uuid')->to('manage#view');
+    $root->route('/_manage/update/#uuid')->to('manage#update');
 
 
     $root->route('/(*path)')->to('dispatcher#view');

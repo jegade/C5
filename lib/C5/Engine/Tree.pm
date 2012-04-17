@@ -100,7 +100,7 @@ sub nodes {
 
     my ($self) = @_;
     
-    return [ map { C5::Engine::Node->new( %$_, path => $self->root . $_->{path}, theme => undef, type => 'html', content => 'plain' ) } @{ $self->paths } ];
+    return [ map { C5::Engine::Node->new( %$_, path => $self->root . $_->{path}, theme => undef, type => 'html', content => 'plain' ) } @{ $self->paths || [] } ];
 }
 
 =head2 store_to_repository

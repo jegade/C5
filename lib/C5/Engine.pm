@@ -49,7 +49,9 @@ sub init {
         # Initialisiere Instance, preload, themes, paths and elements
         $instance->init;
 
-        foreach my $authority ( @{ $instance->authority } ) {
+        my $authorities = ref $instance->authority eq 'ARRAY' ? $instance->authority : [ $instance->authority ];
+        
+        foreach my $authority ( @{ $authorities } ) {
             $set->{$authority} = $instance;
         }
     }

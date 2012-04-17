@@ -53,6 +53,13 @@ sub get {
 
 }
 
+sub drop {
+
+    my ( $self, $uuid ) = @_;
+
+    $self->db->remove( { uuid => $uuid });
+
+}
 sub update {
 
     my ( $self, $raw ) = @_;

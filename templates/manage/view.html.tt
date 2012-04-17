@@ -11,18 +11,73 @@
 
     <tr>
         <td width="150">Titel</td>
-        <td><input type="text" name="payload.code" value="[% object.payload.description | html %]" /></td>
+        <td><input type="text" name="payload.title" value="[% object.payload.title | html %]" /></td>
  
     </tr>
 
     <tr>
         <td>DESCRIPTION</td>
-        <td><textarea name="payload.code">[% object.payload.description | html %]</textarea> </td>
+        <td><textarea name="payload.description">[% object.payload.description | html %]</textarea> </td>
     </tr>
  
     <tr>
         <td>CODE</td>
         <td><textarea name="payload.code">[% object.payload.code | html %]</textarea> </td>
+    </tr>
+
+    [% CASE 'instance' %]
+
+    <tr>
+        <td width="150">Titel</td>
+        <td><input type="text" name="payload.title" value="[% object.payload.title | html %]" /></td>
+ 
+    </tr>
+
+    <tr>
+        <td>DESCRPTION</td>
+        <td><textarea name="payload.description">[% object.payload.description | html %]</textarea> </td>
+    </tr>
+ 
+    <tr>
+        <td>DOMAINS</td>
+        <td>
+        
+            [% SET domains = object.payload.authority %]
+            [% FOREACH domain IN domains %]
+
+            <input type="text" name="payload.authority" value="[% domain | html %]" />
+       
+            [% END %]
+            
+            <input type="text" name="payload.authority" value="" />
+
+        </td>
+    </tr>
+
+    [% CASE 'element' %]
+
+   <tr>
+        <td width="150">DESCRPTION</td>
+        <td><textarea name="payload.description">[% object.payload.description | html %]</textarea> </td>
+    </tr>
+ 
+    <tr>
+        <td>CODE</td>
+        <td><textarea name="payload.code">[% object.payload.code | html %]</textarea> </td>
+    </tr>
+
+    <tr>
+        <td>INSTANCE</td>
+        <td><select name="payload.instance">
+
+            [% FOREACH instance IN instances  %]
+        
+                <option value="[% instance.uuid | html %]">[% instance.payload.title | html %]</option>
+
+    
+            [% END %]
+        </select>
+        </td>
     </tr>
 
     
@@ -31,7 +86,7 @@
     <tr>
 
         <td></td>
-        <td> <button type="submit">Absenden</button> </td>
+        <td> <button type="submit">Update</button> </td>
     </tr>
 
 
