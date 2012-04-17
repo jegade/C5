@@ -7,6 +7,83 @@
     
     [% SWITCH object.meta.type %]
 
+    [% CASE 'tree' %]
+
+    <tr>
+        <td width="150">Name</td>
+        <td><input type="text" name="payload.name" value="[% object.payload.name | html %]" /></td>
+ 
+    </tr>
+
+    <tr>
+        <td width="150">Root</td>
+        <td><input type="text" name="payload.root" value="[% object.payload.root | html %]" /></td>
+ 
+    </tr>
+
+    <tr>
+        <td width="150">Accessor</td>
+        <td><input type="text" name="payload.accessor" value="[% object.payload.accessor | html %]" /></td>
+     </tr>
+
+   <tr>
+        <td>Instanz</td>
+        <td><select name="payload.instance">
+
+            [% FOREACH instance IN instances  %]
+        
+                <option value="[% instance.uuid | html %]">[% instance.payload.title | html %]</option>
+
+    
+            [% END %]
+        </select>
+        </td>
+    </tr>
+
+
+
+    <tr>
+        <td>Description</td>
+        <td><textarea name="payload.description">[% object.payload.description | html %]</textarea> </td>
+    </tr>
+ 
+    <tr>
+        <td>Pfade</td>
+        <td></td>
+    <tr>
+
+    [% SET paths = object.payload.paths %]
+
+    [% FOREACH path IN paths %]
+            
+        <tr>
+            
+            <td>Node:</td>
+            
+        <td>
+
+            <input type="payload.paths.path" placeholder="Pfad" style="width: 20%" value="[% path.path | html %]" />
+            <input type="payload.paths.name" placeholder="Name" style="width: 20%" value="[% path.name | html %]" />
+            <input type="payload.paths.description" placeholder="Beschreibung" style="width: 50%" value="[% path.description | html %]" />
+        </td>
+        
+ 
+
+        </tr>
+
+    [% END %]
+
+    <tr>
+        <td>Neu:</td>
+        <td>
+
+            <input type="payload.paths.path" placeholder="Pfad" style="width: 20%" value="[% path.path | html %]" />
+            <input type="payload.paths.name" placeholder="Name" style="width: 20%" value="[% path.name | html %]" />
+            <input type="payload.paths.description" placeholder="Beschreibung" style="width: 50%" value="[% path.description | html %]" />
+        </td>
+        
+    </tr>
+
     [% CASE 'theme' %]
 
     <tr>
