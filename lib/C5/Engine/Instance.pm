@@ -11,6 +11,7 @@ has trees       => ( is => 'rw' );
 has paths       => ( is => 'rw' );
 has elements    => ( is => 'rw' );
 has themes      => ( is => 'rw' );
+has areas       => ( is => 'rw' );
 has repository  => ( is => 'rw' );
 
 =head2 get_instances
@@ -98,9 +99,12 @@ sub init {
     $self->paths($set);
 
     # Load every element
-    my $elements_by_uuid = {};
-    $elements_by_uuid = C5::Engine::Element->elements_by_uuid( $self->repository, $self->uuid );
+    my $elements_by_uuid = C5::Engine::Element->elements_by_uuid( $self->repository, $self->uuid );
     $self->elements($elements_by_uuid);
+
+    # Load every area
+    my $areas_by_accessor = C5::Engine::Area->areas_by_accessor( $self->repository, $self->uuid );
+    $self->areas($areas_by_accessor);
 
     # Preload themes
     my $themes = C5::Engine::Theme->get_themes_by_instance( $self->repository, $self->uuid );
@@ -108,7 +112,6 @@ sub init {
     foreach my $theme (@$themes) {
         $themes_by_uuid->{ $theme->uuid } = $theme;
     }
-
     $self->themes($themes_by_uuid);
 
 }

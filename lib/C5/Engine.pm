@@ -9,6 +9,7 @@ use C5::Engine::Tree;
 use C5::Engine::Element;
 use C5::Engine::Node;
 use C5::Engine::Response;
+use C5::Engine::Area;
 use Encode;
 
 use Moo;

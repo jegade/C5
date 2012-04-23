@@ -96,6 +96,21 @@
         <td>DESCRIPTION</td>
         <td><textarea name="payload.description">[% object.payload.description | html %]</textarea> </td>
     </tr>
+
+    <tr>
+        <td>INSTANCE</td>
+        <td><select name="payload.instance">
+
+            [% FOREACH instance IN instances  %]
+        
+                <option value="[% instance.uuid | html %]">[% instance.payload.title | html %]</option>
+
+    
+            [% END %]
+        </select>
+        </td>
+    </tr>
+
  
     <tr>
         <td>CODE</td>
@@ -130,6 +145,56 @@
 
         </td>
     </tr>
+
+    [% CASE 'area' %]
+
+    <tr>
+        <td width="150">Titel</td>
+        <td><input type="text" name="payload.title" value="[% object.payload.title | html %]" /></td>
+ 
+    </tr>
+
+   <tr>
+        <td width="150">DESCRPTION</td>
+        <td><textarea name="payload.description">[% object.payload.description | html %]</textarea> </td>
+    </tr>
+ 
+    <tr>
+        <td width="150">Accessor</td>
+        <td><input type="text" name="payload.accessor" value="[% object.payload.accessor | html %]" /></td>
+     </tr>
+
+    <tr>
+        <td>Erlaubte Elemente</td>
+        <td>
+        
+            [% SET elements = object.payload.possible %]
+            [% FOREACH element IN elements %]
+
+            <input type="text" name="payload.possible" value="[% element | html %]" />
+       
+            [% END %]
+            
+            <input type="text" name="payload.possible" value="" />
+
+        </td>
+    </tr>
+
+ 
+    <tr>
+        <td>INSTANCE</td>
+        <td><select name="payload.instance">
+
+            [% FOREACH instance IN instances  %]
+        
+                <option value="[% instance.uuid | html %]">[% instance.payload.title | html %]</option>
+
+    
+            [% END %]
+        </select>
+        </td>
+    </tr>
+
 
     [% CASE 'element' %]
 
