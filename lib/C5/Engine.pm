@@ -68,8 +68,9 @@ sub init {
 
 sub get_response_for {
 
-    my ( $self, $authority, $path ) = @_;
+    my ( $self, $authority, $uri, $path ) = @_;
 
+    # Search authority for request path
     if ( exists $self->instances->{$authority} ) {
 
         # TODO Upgrade Cache to something better
@@ -79,33 +80,42 @@ sub get_response_for {
 
         } else {
 
+            # Get cached instance
             my $instance = $self->instances->{$authority};
 
+            # Get the related node 
             my $node = $instance->get_node_by_path($path);
 
-            # Get content
-            my $content = $instance->get_content_by_path( $node->path );
+
+            my $type = "tt";
+
+            # Get content for type
+            my $content = $instance->get_content_by_path( $node->path, $type );
 
             my $response = undef;
 
             if ( defined $node ) {
 
-                if ( $node->type eq 'code' ) {
+                if ( $type eq 'code' ) {
 
                     # Code verarbeiten und Rückgabe
                     $response = C5::Engine::Response->new( $node->run );
 
-                } elsif ( $node->type eq 'redirect' ) {
+                } elsif ( $type eq 'redirect' ) {
 
                     $response = C5::Engine::Response->new( status => 'redirect', data => $node->url );
 
-                } elsif ( $node->type eq 'html' ) {
+                } elsif ( $type eq 'tt' ) {
 
                     $response = C5::Engine::Response->new( status => 'bytes', data => $self->wrap_with_theme( $instance, $node, $content ) );
 
-                } elsif ( $node->type eq 'file' ) {
+                } elsif ( $type eq 'file' ) {
 
                     $response = C5::Engine::Response->new( status => 'serve', data => $node->fs );
+
+                } elsif ( $type eq 'rss' || $type eq 'xml' ) {
+
+                    $response = C5::Engine::Response->new( status => 'bytes', data => $self->build_feed( $instance, $node, $content ) );
 
                 } else {
 
@@ -120,7 +130,7 @@ sub get_response_for {
             }
 
             # Caching for code and html
-            if ( defined $node && (  $node->type eq 'html' || $node->type eq 'code' ) ) {
+            if ( 0  ) {
 
                 # TODO build storage api
                 if ( !$self->cache ) { $self->cache( {} ); }

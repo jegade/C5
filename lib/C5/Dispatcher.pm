@@ -14,11 +14,16 @@ sub view {
     my $path = $self->stash('path');
     $path = "/".$path if index($path,"/") != 0;
 
+    $self->app->log->debug("Path " . $path ) ;
+
     # Authority for the request domain.tld:port
     my $authority = $self->req->url->to_abs->authority;
 
+    # URI
+    my $uri = $self->req->url->clone;
+
     # Search the related instance for the domain:port
-    my $response = $self->storage->get_response_for( $authority, $path ) ;
+    my $response = $self->engine->get_response_for( $authority, $uri, $path ) ;
 
     if ( defined $response ) {
 

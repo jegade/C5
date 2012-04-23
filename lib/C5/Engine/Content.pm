@@ -7,13 +7,13 @@ use utf8;
 has uuid => ( is => 'rw', lazy => 1, default => sub { return Data::UUID::MT->new->create_string } );
 has title       => ( is => 'rw' );
 has description => ( is => 'rw' );
-has instance    => ( is => 'rw' );
-has path        => ( is => 'rw' );
-has payload     => ( is => 'rw' );
-has type        => ( is => 'rw' );
-has element     => ( is => 'rw' );
-has area        => ( is => 'rw' );
-has repository  => ( is => 'rw' );
+has instance    => ( is => 'rw' );  # Which instance?
+has path        => ( is => 'rw' );  # Which path /…/…
+has payload     => ( is => 'rw' );  # Payload 
+has type        => ( is => 'rw' );  # file,rss,htm,tt,text,ical
+has element     => ( is => 'rw' );  # Which kind of content/widget
+has area        => ( is => 'rw' );  # Which position in the site?
+has repository  => ( is => 'rw' );  # Access to the storage repository
 
 =head2 store_to_repository
 

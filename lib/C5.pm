@@ -20,7 +20,7 @@ sub startup {
 
     $self->attr(
 
-        storage => sub {
+        engine => sub {
 
             # Initialise Repository
             my $c5r = C5::Repository->new( options => $self->defaults->{config}{repository} );
@@ -50,7 +50,7 @@ sub startup {
 
 
     # Database connection $self->storage->db->name
-    $self->helper( storage => sub { shift->app->storage } );
+    $self->helper( engine => sub { shift->app->engine } );
 
     # Routes
     my $r = $self->routes;

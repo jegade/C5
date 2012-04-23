@@ -35,6 +35,8 @@ sub get_instances {
 }
 
 =head2 get_node_by_path 
+    
+    get node for path
 
 =cut
 
@@ -55,17 +57,19 @@ sub get_node_by_path {
 
 =head2 get_content_by_path 
 
+    get content for path
+
 =cut
 
 sub get_content_by_path {
 
     my ( $self, $path ) = @_;
-    return C5::Engine::Content->get_by_path($self->repository, $self->uuid, $path );
+    return C5::Engine::Content->get_by_path( $self->repository, $self->uuid, $path );
 }
 
 =head2 init
 
-    Preload 
+    Preload nodes, paths, themes and elements
 
 =cut
 
@@ -82,11 +86,9 @@ sub init {
     foreach my $tree (@$trees) {
 
         my $nodes = $tree->nodes;
-
         $trees_set->{ $tree->accessor } = $tree;
 
         foreach my $node (@$nodes) {
-
             $set->{ $node->path } = $node;
         }
 
@@ -97,24 +99,24 @@ sub init {
 
     # Load every element
     my $elements_by_uuid = {};
-    $elements_by_uuid = C5::Engine::Element->elements_by_uuid( $self->repository, $self->uuid ) ;
+    $elements_by_uuid = C5::Engine::Element->elements_by_uuid( $self->repository, $self->uuid );
     $self->elements($elements_by_uuid);
 
     # Preload themes
-    my $themes = C5::Engine::Theme->get_themes_by_instance( $self->repository,  $self->uuid );
+    my $themes = C5::Engine::Theme->get_themes_by_instance( $self->repository, $self->uuid );
     my $themes_by_uuid = {};
     foreach my $theme (@$themes) {
         $themes_by_uuid->{ $theme->uuid } = $theme;
     }
 
-
     $self->themes($themes_by_uuid);
-    
 
 }
 
 =head2 store_to_repository
 
+    Glue to the repository
+    
 =cut
 
 sub store_to_repository {
