@@ -11,7 +11,7 @@ has description => ( is => 'rw' );
 has instance    => ( is => 'rw' );
 has code        => ( is => 'rw' );
 has type        => ( is => 'rw' );
-has repository  => ( is => 'rw' ) ;
+has repository  => ( is => 'rw' );
 
 =head2 store_to_repository
 
@@ -29,6 +29,7 @@ sub store_to_repository {
 
     my $payload = {
 
+        title       => $self->title,
         uuid        => $self->uuid,
         description => $self->description,
         instance    => $self->instance,
@@ -42,11 +43,10 @@ sub store_to_repository {
 
 }
 
-
 sub elements_by_uuid {
 
     my ( $self, $repository, $instance ) = @_;
-   
+
     my @in = $repository->query( { 'meta.type' => 'element', 'payload.instance' => $instance } )->all;
 
     my $elements;

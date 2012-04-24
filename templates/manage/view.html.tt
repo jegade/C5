@@ -32,7 +32,7 @@
 
             [% FOREACH instance IN instances  %]
         
-                <option value="[% instance.uuid | html %]">[% instance.payload.title | html %]</option>
+                <option value="[% instance.uuid | html %]" [% IF instance.uuid == object.payload.instance; 'selected="selected"'; END; %]>[% instance.payload.title | html %]</option>
 
     
             [% END %]
@@ -84,7 +84,82 @@
         
     </tr>
 
-    [% CASE 'theme' %]
+    [% CASE 'content' %]
+
+    <tr>
+        <td width="150">Titel</td>
+        <td><input type="text" name="payload.title" value="[% object.payload.title | html %]" /></td>
+ 
+    </tr>
+
+    <tr>
+        <td>DESCRIPTION</td>
+        <td><textarea name="payload.description">[% object.payload.description | html %]</textarea> </td>
+    </tr>
+
+    <tr>
+        <td>Element</td>
+        <td><select name="payload.element">
+
+            [% FOREACH element IN elements  %]
+        
+                <option value="[% element.uuid | html %]" [% IF element.uuid == object.payload.element; 'selected="selected"'; END; %]>[% element.payload.title | html %]</option>
+
+            [% END %]
+        </select>
+        </td>
+    </tr>
+
+    <tr>
+        <td>Type</td>
+        <td><select name="payload.type">
+
+            [% FOREACH type IN types  %]
+        
+                <option value="[% type | html %]" [% IF type == object.payload.type; 'selected="selected"'; END; %]>[% type | html %]</option>
+    
+            [% END %]
+        </select>
+        </td>
+    </tr>
+
+
+
+    <tr>
+        <td>INSTANCE</td>
+        <td><select name="payload.instance">
+
+            [% FOREACH instance IN instances  %]
+        
+                <option value="[% instance.uuid | html %]" [% IF instance.uuid == object.payload.instance; 'selected="selected"'; END; %]>[% instance.payload.title | html %]</option>
+
+    
+            [% END %]
+        </select>
+        </td>
+    </tr>
+
+    <tr>
+        <td>Area</td>
+        <td><select name="payload.area">
+
+            [% FOREACH area IN areas  %]
+        
+                <option value="[% area.uuid | html %]" [% IF area.uuid == object.payload.area; 'selected="selected"'; END; %]>[% area.payload.title | html %]</option>
+
+    
+            [% END %]
+        </select>
+        </td>
+    </tr>
+
+  
+    <tr>
+        <td>Payload</td>
+        <td><textarea name="payload.payload">[% object.payload.payload | html %]</textarea> </td>
+    </tr>
+
+     [% CASE 'theme' %]
 
     <tr>
         <td width="150">Titel</td>
@@ -103,7 +178,7 @@
 
             [% FOREACH instance IN instances  %]
         
-                <option value="[% instance.uuid | html %]">[% instance.payload.title | html %]</option>
+                <option value="[% instance.uuid | html %]" [% IF instance.uuid == object.payload.instance; 'selected="selected"'; END; %]>[% instance.payload.title | html %]</option>
 
     
             [% END %]
@@ -187,7 +262,7 @@
 
             [% FOREACH instance IN instances  %]
         
-                <option value="[% instance.uuid | html %]">[% instance.payload.title | html %]</option>
+                <option value="[% instance.uuid | html %]" [% IF instance.uuid == object.payload.instance; 'selected="selected"'; END; %]>[% instance.payload.title | html %]</option>
 
     
             [% END %]
@@ -197,6 +272,13 @@
 
 
     [% CASE 'element' %]
+
+    <tr>
+        <td width="150">Titel</td>
+        <td><input type="text" name="payload.title" value="[% object.payload.title | html %]" /></td>
+ 
+    </tr>
+
 
    <tr>
         <td width="150">DESCRPTION</td>
@@ -209,12 +291,26 @@
     </tr>
 
     <tr>
+        <td>Type</td>
+        <td><select name="payload.type">
+
+            [% FOREACH type IN types  %]
+        
+                <option value="[% type | html %]" [% IF type == object.payload.type; 'selected="selected"'; END; %]>[% type | html %]</option>
+    
+            [% END %]
+        </select>
+        </td>
+    </tr>
+
+
+    <tr>
         <td>INSTANCE</td>
         <td><select name="payload.instance">
 
             [% FOREACH instance IN instances  %]
         
-                <option value="[% instance.uuid | html %]">[% instance.payload.title | html %]</option>
+                <option value="[% instance.uuid | html %]" [% IF instance.uuid == object.payload.instance; 'selected="selected"'; END; %]>[% instance.payload.title | html %]</option>
 
     
             [% END %]

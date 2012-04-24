@@ -87,7 +87,6 @@ sub get_response_for {
             # Get the related node 
             my $node = $instance->get_node_by_path($path);
 
-
             my $type = "tt";
 
             # Get content for type
